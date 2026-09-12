@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FretEase — עיסוי וחימום ליד לנגני גיטרה</title>
+<title>FMA Tech — עיסוי וחימום ליד לנגני גיטרה</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -186,25 +186,6 @@
     .hero-actions{justify-content:center;}
     .hero-visual{order:-1; max-width:340px; margin:0 auto;}
   }
-
-  /* ---------- video lightbox modal ---------- */
-  .video-modal{
-    position:fixed; inset:0; background:rgba(20,13,8,0.88);
-    display:none; align-items:center; justify-content:center; z-index:1000;
-    padding:24px;
-  }
-  .video-modal.open{display:flex;}
-  .video-modal-inner{position:relative; max-width:420px; width:100%;}
-  .video-modal video{
-    width:100%; max-height:82vh; display:block; border-radius:var(--radius);
-    box-shadow:0 30px 80px rgba(0,0,0,0.5);
-  }
-  .video-modal-close{
-    position:absolute; top:-46px; left:0; width:38px; height:38px; border-radius:50%;
-    background:var(--paper-card); color:var(--ink); border:none; cursor:pointer;
-    font-size:1.1rem; line-height:1; display:flex; align-items:center; justify-content:center;
-  }
-  @media (max-width:600px){ .video-modal-close{top:auto; bottom:-50px; left:50%; transform:translateX(-50%);} }
 
   /* ---------- section shared ---------- */
   section{padding:88px 0;}
@@ -412,7 +393,7 @@
 
 <header>
   <nav class="wrap">
-    <div class="logo">Fret<span>Ease</span></div>
+    <div class="logo">FMA <span>Tech</span></div>
     <div class="nav-links">
       <a href="#how">איך זה עובד</a>
       <a href="#features">התכונות</a>
@@ -568,7 +549,7 @@
   <div class="wrap">
     <div class="buy-card">
       <div class="buy-top">
-        <h3>FretEase — יחידה ראשונה</h3>
+        <h3>FMA Tech — יחידה ראשונה</h3>
         <div class="buy-price">₪179<small>/יחידה <span style="text-decoration:line-through; color:var(--ink-soft); font-size:0.85rem;">₪249</span></small></div>
       </div>
       <p class="buy-desc">מחיר השקה ל-Drop 01 — מהדורה מוגבלת של 5 יחידות בלבד.</p>
@@ -645,7 +626,7 @@
   <div class="wrap" style="max-width:760px;">
     <div class="section-head">
       <h2>תקנון ומדיניות</h2>
-      <p>תנאי שימוש, משלוחים, ביטול עסקה ופרטיות באתר FretEase.</p>
+      <p>תנאי שימוש, משלוחים, ביטול עסקה ופרטיות באתר FMA Tech.</p>
     </div>
 
     <div class="policy-block">
@@ -683,7 +664,7 @@
   <div class="wrap">
     <div class="footer-top">
       <div>
-        <div class="footer-logo">FretEase</div>
+        <div class="footer-logo">FMA Tech</div>
         <p style="max-width:32ch; font-size:0.9rem;">עיסוי וחימום ליד, בין אימון לאימון.</p>
       </div>
       <div class="footer-cols">
@@ -702,25 +683,18 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 FretEase. כל הזכויות שמורות.</span>
+      <span>© 2026 FMA Tech. כל הזכויות שמורות.</span>
       <span>אתר לדוגמה בשלב פיתוח</span>
     </div>
   </div>
 </footer>
-
-<div class="video-modal" id="videoModal" onclick="if(event.target===this) closeVideoModal();">
-  <div class="video-modal-inner">
-    <button type="button" class="video-modal-close" onclick="closeVideoModal()" aria-label="סגור">✕</button>
-    <video id="modalVideo" playsinline controls></video>
-  </div>
-</div>
 
 </div>
 
 <div id="adminRoot" style="display:none;">
   <div class="admin-wrap">
     <header class="admin-header">
-      <div class="logo">Fret<span>Ease</span> · ניהול</div>
+      <div class="logo">FMA <span>Tech</span> · ניהול</div>
       <div style="display:flex; gap:10px; align-items:center;">
         <button class="refresh-btn" onclick="loadOrders()">רענן</button>
         <a href="#" class="admin-exit" onclick="exitAdmin()">יציאה</a>
@@ -759,25 +733,23 @@
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwuY143_B2PSO_eSHvOyR4zlMh5_V5LvTR5-HX29lFvSnqfNbjGjikE_bx9hO_VULniLw/exec';
   function openVideoModal(sourceVideoId){
     const src = document.getElementById(sourceVideoId);
-    const modal = document.getElementById('videoModal');
-    const modalVideo = document.getElementById('modalVideo');
-    src.pause();
-    modalVideo.src = src.querySelector('source').src;
-    modalVideo.muted = false;
-    modal.classList.add('open');
-    modalVideo.currentTime = 0;
-    modalVideo.play();
+    const videoSrc = src.querySelector('source').src;
+    const w = window.open('', '_blank');
+    if(!w){
+      alert('הדפדפן חסם פתיחת חלון חדש — אשרו חלונות קופצים לאתר הזה ונסו שוב');
+      return;
+    }
+    w.document.write(
+      '<!DOCTYPE html><html dir="rtl" lang="he"><head><meta charset="UTF-8">' +
+      '<meta name="viewport" content="width=device-width, initial-scale=1.0">' +
+      '<title>FMA Nexus-1 — הדגמה</title>' +
+      '<style>body{margin:0; background:#1a120b; display:flex; align-items:center; justify-content:center; min-height:100vh;} video{max-width:100%; max-height:100vh; display:block;}</style>' +
+      '</head><body>' +
+      '<video src="' + videoSrc + '" controls autoplay playsinline></video>' +
+      '</body></html>'
+    );
+    w.document.close();
   }
-  function closeVideoModal(){
-    const modal = document.getElementById('videoModal');
-    const modalVideo = document.getElementById('modalVideo');
-    modalVideo.pause();
-    modalVideo.removeAttribute('src');
-    modalVideo.load();
-    modal.classList.remove('open');
-    document.querySelectorAll('.device-plate').forEach(v => { v.muted = true; v.play(); });
-  }
-  document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeVideoModal(); });
   function toggleSound(){
     const video = document.getElementById('heroVideo');
     const icon = document.getElementById('soundIcon');
