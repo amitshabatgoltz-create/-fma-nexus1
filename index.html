@@ -332,6 +332,11 @@
   }
   .buy-cta:hover{background:var(--pine-dark);}
   .buy-note{text-align:center; font-size:0.85rem; color:var(--ink-soft); margin-top:14px;}
+  .buy-card-promo{
+    display:block; text-align:center; margin-top:16px; padding-top:12px; border-top:1px solid var(--line);
+    font-size:0.72rem; color:var(--ink-soft); opacity:0.75; text-decoration:none;
+  }
+  .buy-card-promo:hover{color:var(--brass-dark); opacity:1;}
   @media (max-width:480px){
     .buy-card{padding:32px 22px;}
     .buy-top h3{font-size:1.25rem;}
@@ -372,6 +377,7 @@
 
   /* ---------- Footer ---------- */
   footer{background:var(--ink); color:rgba(247,241,226,0.7); padding:56px 0 30px;}
+  @media (max-width:480px){ footer{padding-bottom:64px;} }
   .footer-top{display:flex; justify-content:space-between; flex-wrap:wrap; gap:30px; margin-bottom:40px;}
   .footer-logo{font-family:'Frank Ruhl Libre',serif; font-size:1.3rem; color:var(--paper-card); margin-bottom:10px;}
   .footer-cols{display:flex; gap:60px; flex-wrap:wrap;}
@@ -383,6 +389,21 @@
     background:#F0DDB0; border:1px solid var(--brass); color:#5A4013;
     font-size:0.85rem; padding:12px 28px; text-align:center;
   }
+  .builder-badge{
+    position:fixed; bottom:18px; left:18px; z-index:500;
+    background:var(--ink); color:var(--paper-card); text-decoration:none;
+    padding:9px 14px; border-radius:30px; font-size:0.74rem; font-weight:600;
+    box-shadow:0 8px 20px rgba(42,27,16,0.3); display:flex; align-items:center; gap:6px;
+    transition:transform .15s, background .15s; white-space:nowrap;
+  }
+  .builder-badge:hover{background:var(--brass-dark); transform:translateY(-2px);}
+  @media (max-width:480px){
+    .builder-badge{
+      bottom:calc(12px + env(safe-area-inset-bottom, 0px));
+      left:12px; padding:9px 13px; font-size:0.68rem; min-height:34px;
+    }
+  }
+  body.order-mode .builder-badge{display:none;}
 
   /* ---------- admin panel (same artifact, same storage) ---------- */
   .admin-wrap{max-width:1000px; margin:0 auto; padding:36px 24px 80px;}
@@ -460,6 +481,10 @@
 <body>
 
 <div id="siteRoot">
+
+<a href="mailto:amitshabatgoltz@gmail.com?subject=רוצה%20לבנות%20אתר" class="builder-badge" title="amitshabatgoltz@gmail.com">
+  🌐 בונה אתרים? דברו איתי
+</a>
 
 <div class="build-note">
   🚧 FAQ, מחיר ומדיניות עודכנו לתוכן אמיתי. עדיין נשאר: תמונות מאקרו אמיתיות (בדרך, ~9 ימים), חיבור אמיתי לוואטסאפ/Bit בטופס השריון, ואישור עו"ד לתקנון.
@@ -656,6 +681,7 @@
         כל 5 היחידות של Drop 01 שוריינו במלואן. עקבו אחרינו לעדכון על Drop 02 בסוכות.
       </div>
       <div class="toast" id="cartToast">הפרטים נשמרו ✓ ניצור איתך קשר בוואטסאפ בקרוב</div>
+      <a href="mailto:amitshabatgoltz@gmail.com?subject=רוצה%20לבנות%20אתר" class="buy-card-promo" title="amitshabatgoltz@gmail.com">🌐 רוצים לבנות אתר כזה? דברו איתי</a>
     </div>
   </div>
 </section>
