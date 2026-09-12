@@ -741,6 +741,7 @@
 </div>
 
 <script>
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwuY143_B2PSO_eSHvOyR4zlMh5_V5LvTR5-HX29lFvSnqfNbjGjikE_bx9hO_VULniLw/exec';
   function openVideoModal(sourceVideoId){
     const src = document.getElementById(sourceVideoId);
     const modal = document.getElementById('videoModal');
@@ -823,10 +824,13 @@
     return 'https://wa.me/' + intl;
   }
 
-  async function updateStatus(key, newStatus, order){
+  async function updateStatus(row, newStatus){
     try{
-      order.status = newStatus;
-      await window.storage.set(key, JSON.stringify(order), true);
+      await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'updateStatus', row, status: newStatus })
+      });
     }catch(err){
       console.error('שגיאה בעדכון הסטטוס:', err);
       alert('לא הצלחנו לשמור את השינוי, נסו שוב.');
@@ -837,10 +841,10 @@
     const content = document.getElementById('adminContent');
     content.innerHTML = '<div class="loading-state">טוען הזמנות…</div>';
     try{
-      const list = await window.storage.list('orders:', true);
-      const keys = (list && list.keys) ? list.keys : [];
+      const res = await fetch(APPS_SCRIPT_URL);
+      const orders = await res.json();
 
-      if(keys.length === 0){
+      if(!orders || orders.length === 0){
         content.innerHTML = '<div class="empty-state">עדיין אין הזמנות. ברגע שמישהו ימלא את טופס השריון באתר, הוא יופיע כאן.</div>';
         document.getElementById('statTotal').textContent = '0';
         document.getElementById('statPending').textContent = '0';
@@ -849,20 +853,7 @@
         return;
       }
 
-      const orders = [];
-      for(const key of keys){
-        try{
-          const res = await window.storage.get(key, true);
-          if(res && res.value){
-            const parsed = JSON.parse(res.value);
-            orders.push({ key, ...parsed });
-          }
-        }catch(e){
-          console.error('שגיאה בטעינת הזמנה', key, e);
-        }
-      }
-
-      orders.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+      orders.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
 
       const pending = orders.filter(o => o.status === 'ממתין ליצירת קשר').length;
       const active = orders.filter(o => o.status !== 'בוטל').length;
@@ -875,12 +866,11 @@
         '</tr></thead><tbody>';
 
       for(const o of orders){
-        const safeOrder = JSON.stringify(o).replace(/"/g, '&quot;');
         html += '<tr>' +
           '<td>' + (o.name || '—') + '</td>' +
           '<td class="order-phone">' + (o.phone || '—') + '</td>' +
-          '<td>' + formatDate(o.createdAt) + '</td>' +
-          '<td><select class="status-select" onchange="updateStatus(\'' + o.key + '\', this.value, ' + safeOrder + ')">' +
+          '<td>' + formatDate(o.timestamp) + '</td>' +
+          '<td><select class="status-select" onchange="updateStatus(' + o.row + ', this.value)">' +
             STATUS_OPTIONS.map(s => '<option value="' + s + '"' + (o.status === s ? ' selected' : '') + '>' + s + '</option>').join('') +
           '</select></td>' +
           '<td><a class="wa-link" target="_blank" rel="noopener" href="' + waLink(o.phone) + '">וואטסאפ</a></td>' +
@@ -907,9 +897,11 @@
     btn.disabled = true;
     btn.textContent = 'שומר...';
     try{
-      const key = 'orders:' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
-      const order = { name, phone, product: 'FMA Nexus-1', price: 179, status: 'ממתין ליצירת קשר', createdAt: new Date().toISOString() };
-      await window.storage.set(key, JSON.stringify(order), true);
+      await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ name, phone })
+      });
       document.getElementById('reserveName').value = '';
       document.getElementById('reservePhone').value = '';
     }catch(err){
