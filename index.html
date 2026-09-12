@@ -281,6 +281,15 @@
   }
   .buy-list li::before{content:"✓"; color:var(--pine); font-weight:700; flex-shrink:0;}
   .reserve-form{display:flex; flex-direction:column; gap:12px; margin-bottom:20px;}
+  .stock-note{
+    font-size:0.9rem; font-weight:600; margin-bottom:20px; min-height:1.2em;
+  }
+  .stock-note.low{color:#B0402E;}
+  .stock-note.ok{color:var(--pine);}
+  .sold-out-note{
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+    padding:18px 20px; color:var(--ink-soft); font-size:0.92rem; text-align:center;
+  }
   .reserve-input{
     border:1px solid var(--line); border-radius:var(--radius); padding:13px 16px;
     font-family:'Heebo',sans-serif; font-size:0.98rem; color:var(--ink); background:var(--paper-card);
@@ -563,18 +572,24 @@
         <div class="buy-price">₪179<small>/יחידה <span style="text-decoration:line-through; color:var(--ink-soft); font-size:0.85rem;">₪249</span></small></div>
       </div>
       <p class="buy-desc">מחיר השקה ל-Drop 01 — מהדורה מוגבלת של 5 יחידות בלבד.</p>
+      <p class="stock-note" id="stockNote"></p>
       <ul class="buy-list">
         <li>מכשיר עיסוי וחימום + רצועה מתכווננת</li>
         <li>כבל טעינה Type-C</li>
         <li>מדריך שימוש קצר</li>
         <li>100% בדיקת מעבדה, כיול אלקטרוני ובקרת איכות לפני משלוח</li>
       </ul>
-      <div class="reserve-form">
-        <input type="text" id="reserveName" class="reserve-input" placeholder="שם מלא">
-        <input type="tel" id="reservePhone" class="reserve-input" placeholder="טלפון נייד (לוואטסאפ)">
+      <div id="reserveFormWrap">
+        <div class="reserve-form">
+          <input type="text" id="reserveName" class="reserve-input" placeholder="שם מלא">
+          <input type="tel" id="reservePhone" class="reserve-input" placeholder="טלפון נייד (10 ספרות, לדוגמה 0501234567)" inputmode="numeric" maxlength="10" pattern="05[0-9]{8}">
+        </div>
+        <button class="buy-cta" id="reserveBtn" onclick="reserveUnit()">שריינו לי יחידה</button>
+        <p class="buy-note">שיטת שריון מקום: לאחר מילוי הפרטים ניצור איתך קשר בוואטסאפ לאישור סופי ולשליחת בקשת תשלום מאובטחת ב-Bit. אין חיוב אוטומטי בשלב הזה.</p>
       </div>
-      <button class="buy-cta" onclick="reserveUnit()">שריינו לי יחידה</button>
-      <p class="buy-note">שיטת שריון מקום: לאחר מילוי הפרטים ניצור איתך קשר בוואטסאפ לאישור סופי ולשליחת בקשת תשלום מאובטחת ב-Bit. אין חיוב אוטומטי בשלב הזה.</p>
+      <div class="sold-out-note" id="soldOutNote" style="display:none;">
+        כל 5 היחידות של Drop 01 שוריינו במלואן. עקבו אחרינו לעדכון על Drop 02 בסוכות.
+      </div>
       <div class="toast" id="cartToast">הפרטים נשמרו ✓ ניצור איתך קשר בוואטסאפ בקרוב</div>
     </div>
   </div>
@@ -801,8 +816,9 @@
     window.location.hash = '';
     document.getElementById('adminRoot').style.display = 'none';
     document.getElementById('siteRoot').style.display = 'block';
+    checkStock();
   }
-  if(window.location.hash === '#admin'){ showAdmin(); }
+  if(window.location.hash === '#admin'){ showAdmin(); } else { checkStock(); }
   window.addEventListener('hashchange', () => {
     if(window.location.hash === '#admin') showAdmin(); else exitAdmin();
   });
@@ -818,7 +834,7 @@
   }
 
   function waLink(phone){
-    const digits = (phone || '').replace(/[^0-9]/g, '');
+    const digits = String(phone || '').replace(/[^0-9]/g, '');
     let intl = digits;
     if(digits.startsWith('0')) intl = '972' + digits.slice(1);
     return 'https://wa.me/' + intl;
@@ -886,6 +902,46 @@
     }
   }
 
+  async function getRemainingUnits(){
+    try{
+      const res = await fetch(APPS_SCRIPT_URL);
+      const orders = await res.json();
+      const active = (orders || []).filter(o => o.status !== 'בוטל').length;
+      return Math.max(0, 5 - active);
+    }catch(err){
+      console.error('שגיאה בבדיקת מלאי:', err);
+      return null; // unknown — don't block the form on a network hiccup
+    }
+  }
+
+  async function checkStock(){
+    const note = document.getElementById('stockNote');
+    const formWrap = document.getElementById('reserveFormWrap');
+    const soldOut = document.getElementById('soldOutNote');
+    if(!note || !formWrap || !soldOut) return;
+
+    const remaining = await getRemainingUnits();
+    if(remaining === null){
+      note.textContent = '';
+      return;
+    }
+    if(remaining <= 0){
+      note.textContent = '';
+      formWrap.style.display = 'none';
+      soldOut.style.display = 'block';
+    } else {
+      formWrap.style.display = 'block';
+      soldOut.style.display = 'none';
+      if(remaining === 1){
+        note.textContent = '🔥 נשארה יחידה אחת בלבד!';
+        note.className = 'stock-note low';
+      } else {
+        note.textContent = 'נשארו ' + remaining + ' יחידות בלבד מתוך 5';
+        note.className = 'stock-note ok';
+      }
+    }
+  }
+
   async function reserveUnit(){
     const name = document.getElementById('reserveName').value.trim();
     const phone = document.getElementById('reservePhone').value.trim();
@@ -893,8 +949,21 @@
       alert('נא למלא שם וטלפון כדי לשריין יחידה');
       return;
     }
-    const btn = document.querySelector('.buy-cta');
+    if(!/^05[0-9]{8}$/.test(phone)){
+      alert('מספר הטלפון חייב להתחיל ב-05 ולהכיל בדיוק 10 ספרות (למשל 0501234567)');
+      return;
+    }
+    const btn = document.getElementById('reserveBtn');
     btn.disabled = true;
+    btn.textContent = 'בודק מלאי...';
+    const remaining = await getRemainingUnits();
+    if(remaining !== null && remaining <= 0){
+      checkStock();
+      btn.disabled = false;
+      btn.textContent = 'שריינו לי יחידה';
+      alert('מצטערים, כל היחידות של Drop 01 שוריינו בדיוק עכשיו. עקבו לעדכון על Drop 02.');
+      return;
+    }
     btn.textContent = 'שומר...';
     try{
       await fetch(APPS_SCRIPT_URL, {
@@ -909,6 +978,7 @@
     }
     btn.disabled = false;
     btn.textContent = 'שריינו לי יחידה';
+    checkStock();
     const toast = document.getElementById('cartToast');
     toast.classList.add('show');
     setTimeout(()=> toast.classList.remove('show'), 3500);
