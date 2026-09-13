@@ -428,6 +428,21 @@
 
   /* ---------- admin panel (same artifact, same storage) ---------- */
   .admin-wrap{max-width:1000px; margin:0 auto; padding:36px 24px 80px;}
+  .admin-gate{
+    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
+  }
+  .admin-gate-card{
+    max-width:320px; width:100%; text-align:center; background:var(--paper-card);
+    border:1px solid var(--line); border-radius:var(--radius); padding:40px 32px;
+  }
+  .admin-gate-label{font-size:0.92rem; color:var(--ink-soft); margin-bottom:16px;}
+  .admin-gate-input{
+    width:100%; text-align:center; letter-spacing:8px; font-size:1.3rem; padding:14px;
+    border:1px solid var(--line); border-radius:var(--radius); margin-bottom:16px;
+    font-family:'Heebo',sans-serif; background:var(--paper);
+  }
+  .admin-gate-input:focus{outline:2px solid var(--pine);}
+  .admin-gate-error{color:#B0402E; font-size:0.85rem; margin-top:12px;}
   .admin-header{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; flex-wrap:wrap; gap:12px;}
   .admin-exit{font-size:0.85rem; color:var(--ink-soft); text-decoration:underline;}
   .admin-subtitle{color:var(--ink-soft); font-size:0.95rem; margin-bottom:28px;}
@@ -841,7 +856,16 @@
 </div>
 
 <div id="adminRoot" style="display:none;">
-  <div class="admin-wrap">
+  <div class="admin-gate" id="adminGate">
+    <div class="admin-gate-card">
+      <div class="logo" style="margin-bottom:18px;">FMA <span>Tech</span> · ניהול</div>
+      <p class="admin-gate-label">הזינו קוד כניסה</p>
+      <input type="password" inputmode="numeric" maxlength="6" id="adminPinInput" class="admin-gate-input" placeholder="••••••" autocomplete="off" onkeydown="if(event.key==='Enter') checkAdminPin();">
+      <button class="buy-cta" onclick="checkAdminPin()">כניסה</button>
+      <p class="admin-gate-error" id="adminGateError" style="display:none;">קוד שגוי, נסו שוב</p>
+    </div>
+  </div>
+  <div class="admin-wrap" id="adminContentWrap" style="display:none;">
     <header class="admin-header">
       <div class="logo">FMA <span>Tech</span> · ניהול</div>
       <div style="display:flex; gap:10px; align-items:center;">
@@ -883,7 +907,7 @@
     <div id="pendingReviews"><div class="loading-state">טוען חוות דעת…</div></div>
 
     <div class="admin-disclaimer">
-      ⚠️ זהו פאנל ניהול פנימי בסיסי, ללא סיסמה — כל מי שיש לו את הקישור עם <span class="ltr-code">#admin</span> בסוף יכול לראות ולערוך. לניהול הזמנות אמיתי בהמשך כדאי לחבר מערכת סליקה/CRM עם הרשאות משתמשים.
+      ⚠️ זהו פאנל ניהול פנימי בסיסי, מוגן בקוד כניסה פשוט — לא הצפנה אמיתית (מי שמסתכל בקוד המקור של העמוד יכול לראות את הקוד). מספיק כדי למנוע כניסה מקרית, לא בטוח מספיק ל"עסק אמיתי" עם מידע רגיש. לניהול הזמנות אמיתי בהמשך כדאי לחבר מערכת סליקה/CRM עם הרשאות משתמשים.
     </div>
   </div>
 </div>
@@ -931,11 +955,35 @@
       icon.innerHTML = '<path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/><line x1="16" y1="9" x2="22" y2="15" stroke="currentColor" stroke-width="2"/><line x1="22" y1="9" x2="16" y2="15" stroke="currentColor" stroke-width="2"/>';
     }
   }
+  const ADMIN_PIN = '282014';
+
   function showAdmin(){
     document.body.classList.remove('order-mode');
     document.getElementById('siteRoot').style.display = 'none';
     document.getElementById('videoRoot').style.display = 'none';
     document.getElementById('adminRoot').style.display = 'block';
+    if(sessionStorage.getItem('fmaAdminUnlocked') === '1'){
+      unlockAdmin();
+    } else {
+      document.getElementById('adminGate').style.display = 'flex';
+      document.getElementById('adminContentWrap').style.display = 'none';
+      setTimeout(() => { const el = document.getElementById('adminPinInput'); if(el) el.focus(); }, 50);
+    }
+  }
+  function checkAdminPin(){
+    const val = document.getElementById('adminPinInput').value.trim();
+    const err = document.getElementById('adminGateError');
+    if(val === ADMIN_PIN){
+      sessionStorage.setItem('fmaAdminUnlocked', '1');
+      unlockAdmin();
+    } else {
+      err.style.display = 'block';
+      document.getElementById('adminPinInput').value = '';
+    }
+  }
+  function unlockAdmin(){
+    document.getElementById('adminGate').style.display = 'none';
+    document.getElementById('adminContentWrap').style.display = 'block';
     loadOrders();
     loadPendingReviews();
     loadVisitCount();
