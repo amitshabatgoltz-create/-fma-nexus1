@@ -858,9 +858,31 @@
       '<!DOCTYPE html><html dir="rtl" lang="he"><head><meta charset="UTF-8">' +
       '<meta name="viewport" content="width=device-width, initial-scale=1.0">' +
       '<title>FMA Nexus-1 — הדגמה</title>' +
-      '<style>body{margin:0; background:#1a120b; display:flex; align-items:center; justify-content:center; min-height:100vh;} video{max-width:100%; max-height:100vh; display:block;}</style>' +
+      '<style>' +
+        'html,body{margin:0; height:100%; background:#1a120b; overflow:hidden;} ' +
+        'body{display:flex; align-items:center; justify-content:center; touch-action:pan-y;} ' +
+        'video{max-width:100%; max-height:100vh; display:block;} ' +
+        '.close-x{position:fixed; top:16px; left:16px; width:44px; height:44px; border-radius:50%; ' +
+          'background:rgba(255,255,255,0.14); color:#fff; border:none; font-size:1.3rem; cursor:pointer; ' +
+          'display:flex; align-items:center; justify-content:center; z-index:10;} ' +
+        '.close-x:hover{background:rgba(255,255,255,0.24);} ' +
+        '.swipe-hint{position:fixed; bottom:18px; left:0; right:0; text-align:center; color:rgba(255,255,255,0.55); ' +
+          'font-family:sans-serif; font-size:0.78rem; z-index:10;}' +
+      '</style>' +
       '</head><body>' +
+      '<button class="close-x" onclick="window.close()" aria-label="סגור">✕</button>' +
       '<video src="' + videoSrc + '" controls autoplay playsinline></video>' +
+      '<div class="swipe-hint">החליקו למעלה כדי לצאת</div>' +
+      '<script>' +
+        'let startY = null;' +
+        'document.body.addEventListener("touchstart", function(e){ startY = e.touches[0].clientY; }, {passive:true});' +
+        'document.body.addEventListener("touchend", function(e){' +
+          'if(startY === null) return;' +
+          'const endY = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientY : startY;' +
+          'if(startY - endY > 70){ window.close(); }' +
+          'startY = null;' +
+        '}, {passive:true});' +
+      '</script>' +
       '</body></html>'
     );
     w.document.close();
