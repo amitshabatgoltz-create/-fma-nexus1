@@ -384,6 +384,10 @@
   .footer-col h4{color:var(--paper-card); font-size:0.9rem; margin-bottom:14px; font-weight:600;}
   .footer-col a{display:block; color:rgba(247,241,226,0.62); text-decoration:none; font-size:0.92rem; margin-bottom:9px;}
   .footer-bottom{border-top:1px solid rgba(247,241,226,0.15); padding-top:22px; font-size:0.82rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+  .footer-privacy-note{
+    font-size:0.78rem; color:rgba(247,241,226,0.55); max-width:70ch; margin-bottom:22px; line-height:1.6;
+  }
+  .footer-privacy-note a{color:rgba(247,241,226,0.8); text-decoration:underline;}
 
   .build-note{
     background:#F0DDB0; border:1px solid var(--brass); color:#5A4013;
@@ -482,7 +486,7 @@
 
 <div id="siteRoot">
 
-<a href="https://mail.google.com/mail/?view=cm&fs=1&to=amitshabatgoltz@gmail.com&su=רוצה%20לבנות%20אתר" target="_blank" rel="noopener" class="builder-badge" title="amitshabatgoltz@gmail.com">
+<a href="https://mail.google.com/mail/?view=cm&fs=1&to=amitshabatgoltz@gmail.com&su=רוצה%20לבנות%20אתר" target="_blank" rel="noopener noreferrer" class="builder-badge" title="amitshabatgoltz@gmail.com">
   🌐 בונה אתרים? דברו איתי
 </a>
 
@@ -499,7 +503,7 @@
       <a href="#reviews">חוות דעת</a>
       <a href="#faq">שאלות נפוצות</a>
     </div>
-    <a href="#order" target="_blank" rel="noopener" class="nav-cta">להזמנה</a>
+    <a href="#order" target="_blank" rel="noopener noreferrer" class="nav-cta">להזמנה</a>
   </nav>
 </header>
 
@@ -510,7 +514,7 @@
       <h1>סיימת לנגן.<br>עכשיו תנו ליד לנוח.</h1>
       <p class="lead">מכשיר עיסוי וחימום קומפקטי שנלבש על שורש כף היד ואצבעות, ומקל על המתח והכאב שמצטברים אחרי תרגול או הופעה.</p>
       <div class="hero-actions">
-        <a href="#order" target="_blank" rel="noopener" class="btn-primary">להזמנה מוקדמת</a>
+        <a href="#order" target="_blank" rel="noopener noreferrer" class="btn-primary">להזמנה מוקדמת</a>
         <a href="#how" class="btn-ghost">איך זה עובד</a>
       </div>
       <p class="price-note">מחיר השקה <b>₪179</b> <span style="text-decoration:line-through; color:var(--ink-soft); font-weight:400;">₪249</span> · Drop 01 בלבד</p>
@@ -681,7 +685,7 @@
         כל 5 היחידות של Drop 01 שוריינו במלואן. עקבו אחרינו לעדכון על Drop 02 בסוכות.
       </div>
       <div class="toast" id="cartToast">הפרטים נשמרו ✓ ניצור איתך קשר בוואטסאפ בקרוב</div>
-      <a href="https://mail.google.com/mail/?view=cm&fs=1&to=amitshabatgoltz@gmail.com&su=רוצה%20לבנות%20אתר" target="_blank" rel="noopener" class="buy-card-promo">🌐 רוצים לבנות אתר כמו הזה? כתבו לי: amitshabatgoltz@gmail.com</a>
+      <a href="https://mail.google.com/mail/?view=cm&fs=1&to=amitshabatgoltz@gmail.com&su=רוצה%20לבנות%20אתר" target="_blank" rel="noopener noreferrer" class="buy-card-promo">🌐 רוצים לבנות אתר כמו הזה? כתבו לי: amitshabatgoltz@gmail.com</a>
     </div>
   </div>
 </section>
@@ -782,7 +786,7 @@
           <h4>מוצר</h4>
           <a href="#how">איך זה עובד</a>
           <a href="#features">תכונות</a>
-          <a href="#order" target="_blank" rel="noopener">רכישה</a>
+          <a href="#order" target="_blank" rel="noopener noreferrer">רכישה</a>
         </div>
         <div class="footer-col">
           <h4>תמיכה</h4>
@@ -792,6 +796,9 @@
         </div>
       </div>
     </div>
+    <p class="footer-privacy-note">
+      פרטים שאתם משתפים באתר (שם, טלפון בטופס ההזמנה; שם, דירוג וטקסט ותמונה בחוות דעת) נאספים אך ורק לצורך טיפול בהזמנה ובפרסום חוות הדעת שלכם — לא מועברים לצד שלישי לשיווק. פירוט מלא ב<a href="#policy">תקנון ומדיניות</a>.
+    </p>
     <div class="footer-bottom">
       <span>© 2026 FMA Tech. כל הזכויות שמורות.</span>
       <span>אתר לדוגמה בשלב פיתוח</span>
@@ -846,6 +853,7 @@
 
 <script>
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwuY143_B2PSO_eSHvOyR4zlMh5_V5LvTR5-HX29lFvSnqfNbjGjikE_bx9hO_VULniLw/exec';
+  const ADMIN_KEY = 'fma-nexus1-7q2k9x5w';
   function openVideoModal(sourceVideoId){
     const src = document.getElementById(sourceVideoId);
     const videoSrc = src.querySelector('source').src;
@@ -971,7 +979,7 @@
       await fetch(APPS_SCRIPT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'updateStatus', row, status: newStatus })
+        body: JSON.stringify({ action: 'updateStatus', row, status: newStatus, key: ADMIN_KEY })
       });
     }catch(err){
       console.error('שגיאה בעדכון הסטטוס:', err);
@@ -984,9 +992,13 @@
     if(!el) return;
     el.innerHTML = '<div class="loading-state">טוען חוות דעת…</div>';
     try{
-      const res = await fetch(APPS_SCRIPT_URL + '?type=reviews&all=1');
+      const res = await fetch(APPS_SCRIPT_URL + '?type=reviews&all=1&key=' + ADMIN_KEY);
       const all = await res.json();
-      const pending = (all || []).filter(r => r.status === 'ממתין לאישור');
+      if(!all || all.error){
+        el.innerHTML = '<div class="error-state">אין הרשאה לצפות בחוות דעת (מפתח שגוי).</div>';
+        return;
+      }
+      const pending = all.filter(r => r.status === 'ממתין לאישור');
 
       if(pending.length === 0){
         el.innerHTML = '<div class="empty-state">אין חוות דעת שממתינות לאישור כרגע.</div>';
@@ -1022,7 +1034,7 @@
       await fetch(APPS_SCRIPT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'updateReviewStatus', row, status })
+        body: JSON.stringify({ action: 'updateReviewStatus', row, status, key: ADMIN_KEY })
       });
       card.remove();
     }catch(err){
@@ -1036,10 +1048,15 @@
     const content = document.getElementById('adminContent');
     content.innerHTML = '<div class="loading-state">טוען הזמנות…</div>';
     try{
-      const res = await fetch(APPS_SCRIPT_URL);
+      const res = await fetch(APPS_SCRIPT_URL + '?type=orders&key=' + ADMIN_KEY);
       const orders = await res.json();
 
-      if(!orders || orders.length === 0){
+      if(!orders || orders.error){
+        content.innerHTML = '<div class="error-state">אין הרשאה לצפות בהזמנות (מפתח שגוי).</div>';
+        return;
+      }
+
+      if(orders.length === 0){
         content.innerHTML = '<div class="empty-state">עדיין אין הזמנות. ברגע שמישהו ימלא את טופס השריון באתר, הוא יופיע כאן.</div>';
         document.getElementById('statTotal').textContent = '0';
         document.getElementById('statPending').textContent = '0';
@@ -1068,7 +1085,7 @@
           '<td><select class="status-select" onchange="updateStatus(' + o.row + ', this.value)">' +
             STATUS_OPTIONS.map(s => '<option value="' + s + '"' + (o.status === s ? ' selected' : '') + '>' + s + '</option>').join('') +
           '</select></td>' +
-          '<td><a class="wa-link" target="_blank" rel="noopener" href="' + waLink(o.phone) + '">וואטסאפ</a></td>' +
+          '<td><a class="wa-link" target="_blank" rel="noopener noreferrer" href="' + waLink(o.phone) + '">וואטסאפ</a></td>' +
         '</tr>';
       }
       html += '</tbody></table>';
@@ -1203,10 +1220,9 @@
 
   async function getRemainingUnits(){
     try{
-      const res = await fetch(APPS_SCRIPT_URL);
-      const orders = await res.json();
-      const active = (orders || []).filter(o => o.status !== 'בוטל').length;
-      return Math.max(0, 5 - active);
+      const res = await fetch(APPS_SCRIPT_URL + '?type=stock');
+      const data = await res.json();
+      return (typeof data.remaining === 'number') ? data.remaining : null;
     }catch(err){
       console.error('שגיאה בבדיקת מלאי:', err);
       return null; // unknown — don't block the form on a network hiccup
