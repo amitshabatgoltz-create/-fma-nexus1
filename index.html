@@ -414,6 +414,15 @@
   .admin-header{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; flex-wrap:wrap; gap:12px;}
   .admin-exit{font-size:0.85rem; color:var(--ink-soft); text-decoration:underline;}
   .admin-subtitle{color:var(--ink-soft); font-size:0.95rem; margin-bottom:28px;}
+  .visit-counter-card{
+    background:var(--ink); color:var(--paper-card); border-radius:var(--radius);
+    padding:26px 28px; margin-bottom:28px; text-align:center;
+  }
+  .visit-counter-num{
+    font-family:'Frank Ruhl Libre',serif; font-size:2.6rem; font-weight:700; color:var(--brass);
+    line-height:1.1;
+  }
+  .visit-counter-label{font-size:0.9rem; color:rgba(247,241,226,0.75); margin-top:4px;}
   .stats-row{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:32px;}
   .stat-card{background:var(--paper-card); border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px;}
   .stat-card .num{font-family:'Frank Ruhl Libre',serif; font-size:2rem; font-weight:700; color:var(--brass-dark);}
@@ -813,11 +822,16 @@
     <header class="admin-header">
       <div class="logo">FMA <span>Tech</span> · ניהול</div>
       <div style="display:flex; gap:10px; align-items:center;">
-        <button class="refresh-btn" onclick="loadOrders(); loadPendingReviews();">רענן</button>
+        <button class="refresh-btn" onclick="loadOrders(); loadPendingReviews(); loadVisitCount();">רענן</button>
         <a href="#" class="admin-exit" onclick="exitAdmin()">יציאה</a>
       </div>
     </header>
     <p class="admin-subtitle">כל ההזמנות שמגיעות מטופס "שריינו לי יחידה" באתר.</p>
+
+    <div class="visit-counter-card">
+      <div class="visit-counter-num" id="visitCount">–</div>
+      <div class="visit-counter-label">סך הכל ביקורים באתר</div>
+    </div>
 
     <div class="stats-row">
       <div class="stat-card">
@@ -929,6 +943,19 @@
     document.getElementById('adminRoot').style.display = 'block';
     loadOrders();
     loadPendingReviews();
+    loadVisitCount();
+  }
+  async function loadVisitCount(){
+    const el = document.getElementById('visitCount');
+    if(!el) return;
+    try{
+      const res = await fetch(APPS_SCRIPT_URL + '?type=visitCount');
+      const data = await res.json();
+      el.textContent = (typeof data.count === 'number') ? data.count.toLocaleString('he-IL') : '–';
+    }catch(err){
+      console.error('שגיאה בטעינת מונה ביקורים:', err);
+      el.textContent = '–';
+    }
   }
   function showOrderOnly(){
     document.getElementById('adminRoot').style.display = 'none';
@@ -955,6 +982,9 @@
     else showNormal();
   }
   routeByHash();
+  if(window.location.hash !== '#admin'){
+    fetch(APPS_SCRIPT_URL + '?type=trackVisit').catch(err => console.error('שגיאה במעקב ביקור:', err));
+  }
   window.addEventListener('hashchange', routeByHash);
 
   const STATUS_OPTIONS = ['ממתין ליצירת קשר', 'נוצר קשר בוואטסאפ', 'שולם', 'בוטל'];
