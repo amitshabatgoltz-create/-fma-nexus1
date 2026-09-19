@@ -516,6 +516,12 @@
   .mod-approve:hover{background:var(--pine-dark);}
   .mod-reject{background:var(--paper); color:var(--ink-soft); border:1px solid var(--line);}
   .mod-reject:hover{background:var(--line);}
+  .idea-card{
+    background:var(--paper-card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:18px 20px; margin-bottom:14px;
+  }
+  .idea-card .txt{font-size:0.94rem; margin-bottom:6px; white-space:pre-wrap;}
+  .idea-card .meta{font-size:0.8rem; color:var(--ink-soft);}
   .ltr-code{direction:ltr; unicode-bidi:isolate; font-family:monospace; background:rgba(42,27,16,0.08); padding:1px 5px; border-radius:2px;}
   @media (max-width:700px){
     .orders-table{display:block; overflow-x:auto; white-space:nowrap;}
@@ -542,6 +548,7 @@
       <a href="#how">איך זה עובד</a>
       <a href="#features">התכונות</a>
       <a href="#reviews">חוות דעת</a>
+      <a href="#ideas">שתפו רעיון</a>
       <a href="#faq">שאלות נפוצות</a>
     </div>
     <a href="#order" target="_blank" rel="noopener noreferrer" class="nav-cta">להזמנה</a>
@@ -815,6 +822,21 @@
   </div>
 </section>
 
+<section id="ideas">
+  <div class="wrap" style="max-width:640px;">
+    <div class="section-head">
+      <h2>יש לכם רעיון לשיפור?</h2>
+      <p>הצעה לתכונה חדשה, שיפור למוצר או רעיון ל-Drop הבא — נשמח לשמוע.</p>
+    </div>
+    <div class="review-form-card" style="margin-top:0;">
+      <input type="text" id="ideaName" class="reserve-input" placeholder="שם (רשות)">
+      <textarea id="ideaText" class="reserve-input review-textarea" placeholder="ספרו לנו על הרעיון שלכם..." rows="4"></textarea>
+      <button class="buy-cta" id="submitIdeaBtn" onclick="submitIdea()">שלחו הצעה</button>
+      <div class="toast" id="ideaToast">תודה על ההצעה! נשמח לקרוא אותה 🙌</div>
+    </div>
+  </div>
+</section>
+
 <footer>
   <div class="wrap">
     <div class="footer-top">
@@ -869,7 +891,7 @@
     <header class="admin-header">
       <div class="logo">FMA <span>Tech</span> · ניהול</div>
       <div style="display:flex; gap:10px; align-items:center;">
-        <button class="refresh-btn" onclick="loadOrders(); loadPendingReviews(); loadVisitCount();">רענן</button>
+        <button class="refresh-btn" onclick="loadOrders(); loadPendingReviews(); loadIdeas(); loadVisitCount();">רענן</button>
         <a href="#" class="admin-exit" onclick="exitAdmin()">יציאה</a>
       </div>
     </header>
@@ -905,6 +927,11 @@
       <h2>חוות דעת ממתינות לאישור</h2>
     </div>
     <div id="pendingReviews"><div class="loading-state">טוען חוות דעת…</div></div>
+
+    <div class="admin-section-head">
+      <h2>רעיונות והצעות שהתקבלו</h2>
+    </div>
+    <div id="ideasList"><div class="loading-state">טוען הצעות…</div></div>
 
     <div class="admin-disclaimer">
       ⚠️ זהו פאנל ניהול פנימי בסיסי, מוגן בקוד כניסה פשוט — לא הצפנה אמיתית (מי שמסתכל בקוד המקור של העמוד יכול לראות את הקוד). מספיק כדי למנוע כניסה מקרית, לא בטוח מספיק ל"עסק אמיתי" עם מידע רגיש. לניהול הזמנות אמיתי בהמשך כדאי לחבר מערכת סליקה/CRM עם הרשאות משתמשים.
@@ -986,6 +1013,7 @@
     document.getElementById('adminContentWrap').style.display = 'block';
     loadOrders();
     loadPendingReviews();
+    loadIdeas();
     loadVisitCount();
   }
   async function loadVisitCount(){
@@ -1135,6 +1163,36 @@
       console.error('שגיאה בעדכון חוות דעת:', err);
       alert('לא הצלחנו לשמור, נסו שוב.');
       card.style.opacity = '1';
+    }
+  }
+
+  async function loadIdeas(){
+    const el = document.getElementById('ideasList');
+    if(!el) return;
+    el.innerHTML = '<div class="loading-state">טוען הצעות…</div>';
+    try{
+      const res = await fetch(APPS_SCRIPT_URL + '?type=ideas&key=' + ADMIN_KEY);
+      const ideas = await res.json();
+      if(!ideas || ideas.error){
+        el.innerHTML = '<div class="error-state">אין הרשאה לצפות בהצעות (מפתח שגוי).</div>';
+        return;
+      }
+      if(ideas.length === 0){
+        el.innerHTML = '<div class="empty-state">עדיין לא התקבלו הצעות.</div>';
+        return;
+      }
+      ideas.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+      let html = '';
+      for(const idea of ideas){
+        html += '<div class="idea-card">';
+        html += '<div class="txt">' + (idea.text || '') + '</div>';
+        html += '<div class="meta">' + (idea.name || 'אנונימי') + ' · ' + formatDate(idea.timestamp) + '</div>';
+        html += '</div>';
+      }
+      el.innerHTML = html;
+    }catch(err){
+      console.error('שגיאה בטעינת הצעות:', err);
+      el.innerHTML = '<div class="error-state">משהו השתבש בטעינת ההצעות.</div>';
     }
   }
 
@@ -1310,6 +1368,35 @@
     }
     btn.disabled = false;
     btn.textContent = 'פרסמו חוות דעת';
+  }
+
+  async function submitIdea(){
+    const name = document.getElementById('ideaName').value.trim();
+    const text = document.getElementById('ideaText').value.trim();
+    if(!text){
+      alert('נא לכתוב את ההצעה שלכם');
+      return;
+    }
+    const btn = document.getElementById('submitIdeaBtn');
+    btn.disabled = true;
+    btn.textContent = 'שולח...';
+    try{
+      await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'submitIdea', name, text })
+      });
+      document.getElementById('ideaName').value = '';
+      document.getElementById('ideaText').value = '';
+      const toast = document.getElementById('ideaToast');
+      toast.classList.add('show');
+      setTimeout(()=> toast.classList.remove('show'), 4000);
+    }catch(err){
+      console.error('שגיאה בשליחת הצעה:', err);
+      alert('לא הצלחנו לשלוח את ההצעה, נסו שוב.');
+    }
+    btn.disabled = false;
+    btn.textContent = 'שלחו הצעה';
   }
 
   async function getRemainingUnits(){
