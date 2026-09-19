@@ -219,6 +219,23 @@
   .section-head h2{font-size:clamp(1.8rem,3vw,2.4rem); margin-bottom:14px;}
   .section-head p{color:var(--ink-soft); font-size:1.05rem;}
 
+  /* ---------- idea box ---------- */
+  .idea-box-section{padding:60px 0;}
+  .idea-box{
+    max-width:640px; margin:0 auto; background:var(--paper-card); border:1px solid var(--line);
+    border-radius:var(--radius); padding:36px 34px; text-align:center;
+  }
+  .idea-box h3{font-size:1.25rem; margin-bottom:22px; line-height:1.4;}
+  .idea-box .reserve-input{margin-bottom:12px;}
+  .idea-textarea{resize:vertical; font-family:'Assistant',sans-serif; text-align:right;}
+  .idea-submit-btn{
+    width:100%; background:var(--brass); color:var(--paper-card); border:none;
+    padding:16px; border-radius:var(--radius); font-size:1.02rem; font-weight:700; cursor:pointer;
+    font-family:'Assistant',sans-serif; transition:background .15s;
+  }
+  .idea-submit-btn:hover{background:var(--brass-dark);}
+  @media (max-width:480px){ .idea-box{padding:26px 20px;} .idea-box h3{font-size:1.1rem;} }
+
   /* ---------- Problem ---------- */
   .problem{background:var(--paper-card); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
   .problem-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:36px;}
@@ -518,9 +535,9 @@
   .mod-reject:hover{background:var(--line);}
   .idea-card{
     background:var(--paper-card); border:1px solid var(--line); border-radius:var(--radius);
-    padding:18px 20px; margin-bottom:14px;
+    padding:16px 20px; margin-bottom:12px;
   }
-  .idea-card .txt{font-size:0.94rem; margin-bottom:6px; white-space:pre-wrap;}
+  .idea-card .txt{font-size:0.95rem; margin-bottom:8px; line-height:1.5;}
   .idea-card .meta{font-size:0.8rem; color:var(--ink-soft);}
   .ltr-code{direction:ltr; unicode-bidi:isolate; font-family:monospace; background:rgba(42,27,16,0.08); padding:1px 5px; border-radius:2px;}
   @media (max-width:700px){
@@ -548,7 +565,6 @@
       <a href="#how">איך זה עובד</a>
       <a href="#features">התכונות</a>
       <a href="#reviews">חוות דעת</a>
-      <a href="#ideas">שתפו רעיון</a>
       <a href="#faq">שאלות נפוצות</a>
     </div>
     <a href="#order" target="_blank" rel="noopener noreferrer" class="nav-cta">להזמנה</a>
@@ -578,6 +594,18 @@
       <button type="button" class="sound-toggle" id="soundToggle3" onclick="event.stopPropagation(); toggleSound3()" aria-label="הפעל קול"><svg id="soundIcon3" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/><line x1="16" y1="9" x2="22" y2="15" stroke="currentColor" stroke-width="2"/><line x1="22" y1="9" x2="16" y2="15" stroke="currentColor" stroke-width="2"/></svg></button>
       </div>
       <div class="badge">חימום + עיסוי ב־2 דקות</div>
+    </div>
+  </div>
+</section>
+
+<section class="idea-box-section">
+  <div class="wrap">
+    <div class="idea-box">
+      <h3>יש לכם רעיון לפיצ'ר מטורף ל-FMA Nexus-Right? תכתבו לנו אותו כאן</h3>
+      <textarea id="ideaText" class="reserve-input idea-textarea" placeholder="ספרו לנו על הרעיון שלכם..." rows="4"></textarea>
+      <input type="text" id="ideaName" class="reserve-input" placeholder="שם (רשות)">
+      <button class="idea-submit-btn" onclick="submitIdea()">שלחו את הרעיון</button>
+      <div class="toast" id="ideaToast">תודה! הרעיון שלכם נשלח אלינו ✓</div>
     </div>
   </div>
 </section>
@@ -822,21 +850,6 @@
   </div>
 </section>
 
-<section id="ideas">
-  <div class="wrap" style="max-width:640px;">
-    <div class="section-head">
-      <h2>יש לכם רעיון לשיפור?</h2>
-      <p>הצעה לתכונה חדשה, שיפור למוצר או רעיון ל-Drop הבא — נשמח לשמוע.</p>
-    </div>
-    <div class="review-form-card" style="margin-top:0;">
-      <input type="text" id="ideaName" class="reserve-input" placeholder="שם (רשות)">
-      <textarea id="ideaText" class="reserve-input review-textarea" placeholder="ספרו לנו על הרעיון שלכם..." rows="4"></textarea>
-      <button class="buy-cta" id="submitIdeaBtn" onclick="submitIdea()">שלחו הצעה</button>
-      <div class="toast" id="ideaToast">תודה על ההצעה! נשמח לקרוא אותה 🙌</div>
-    </div>
-  </div>
-</section>
-
 <footer>
   <div class="wrap">
     <div class="footer-top">
@@ -929,9 +942,9 @@
     <div id="pendingReviews"><div class="loading-state">טוען חוות דעת…</div></div>
 
     <div class="admin-section-head">
-      <h2>רעיונות והצעות שהתקבלו</h2>
+      <h2>רעיונות לפיצ'רים</h2>
     </div>
-    <div id="ideasList"><div class="loading-state">טוען הצעות…</div></div>
+    <div id="ideasList"><div class="loading-state">טוען רעיונות…</div></div>
 
     <div class="admin-disclaimer">
       ⚠️ זהו פאנל ניהול פנימי בסיסי, מוגן בקוד כניסה פשוט — לא הצפנה אמיתית (מי שמסתכל בקוד המקור של העמוד יכול לראות את הקוד). מספיק כדי למנוע כניסה מקרית, לא בטוח מספיק ל"עסק אמיתי" עם מידע רגיש. לניהול הזמנות אמיתי בהמשך כדאי לחבר מערכת סליקה/CRM עם הרשאות משתמשים.
@@ -1109,6 +1122,36 @@
     }
   }
 
+  async function loadIdeas(){
+    const el = document.getElementById('ideasList');
+    if(!el) return;
+    el.innerHTML = '<div class="loading-state">טוען רעיונות…</div>';
+    try{
+      const res = await fetch(APPS_SCRIPT_URL + '?type=ideas&key=' + ADMIN_KEY);
+      const ideas = await res.json();
+      if(!ideas || ideas.error){
+        el.innerHTML = '<div class="error-state">אין הרשאה לצפות ברעיונות (מפתח שגוי).</div>';
+        return;
+      }
+      if(ideas.length === 0){
+        el.innerHTML = '<div class="empty-state">עדיין לא נשלחו רעיונות.</div>';
+        return;
+      }
+      ideas.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+      let html = '';
+      for(const idea of ideas){
+        html += '<div class="idea-card">' +
+          '<div class="txt">' + (idea.text || '') + '</div>' +
+          '<div class="meta">' + (idea.name || 'אנונימי') + ' · ' + formatDate(idea.timestamp) + '</div>' +
+        '</div>';
+      }
+      el.innerHTML = html;
+    }catch(err){
+      console.error('שגיאה בטעינת רעיונות:', err);
+      el.innerHTML = '<div class="error-state">משהו השתבש בטעינת הרעיונות.</div>';
+    }
+  }
+
   async function loadPendingReviews(){
     const el = document.getElementById('pendingReviews');
     if(!el) return;
@@ -1163,36 +1206,6 @@
       console.error('שגיאה בעדכון חוות דעת:', err);
       alert('לא הצלחנו לשמור, נסו שוב.');
       card.style.opacity = '1';
-    }
-  }
-
-  async function loadIdeas(){
-    const el = document.getElementById('ideasList');
-    if(!el) return;
-    el.innerHTML = '<div class="loading-state">טוען הצעות…</div>';
-    try{
-      const res = await fetch(APPS_SCRIPT_URL + '?type=ideas&key=' + ADMIN_KEY);
-      const ideas = await res.json();
-      if(!ideas || ideas.error){
-        el.innerHTML = '<div class="error-state">אין הרשאה לצפות בהצעות (מפתח שגוי).</div>';
-        return;
-      }
-      if(ideas.length === 0){
-        el.innerHTML = '<div class="empty-state">עדיין לא התקבלו הצעות.</div>';
-        return;
-      }
-      ideas.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
-      let html = '';
-      for(const idea of ideas){
-        html += '<div class="idea-card">';
-        html += '<div class="txt">' + (idea.text || '') + '</div>';
-        html += '<div class="meta">' + (idea.name || 'אנונימי') + ' · ' + formatDate(idea.timestamp) + '</div>';
-        html += '</div>';
-      }
-      el.innerHTML = html;
-    }catch(err){
-      console.error('שגיאה בטעינת הצעות:', err);
-      el.innerHTML = '<div class="error-state">משהו השתבש בטעינת ההצעות.</div>';
     }
   }
 
@@ -1332,6 +1345,35 @@
     reader.readAsDataURL(file);
   }
 
+  async function submitIdea(){
+    const text = document.getElementById('ideaText').value.trim();
+    const name = document.getElementById('ideaName').value.trim();
+    if(!text){
+      alert('נא לכתוב את הרעיון לפני השליחה');
+      return;
+    }
+    const btn = document.querySelector('.idea-submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'שולח...';
+    try{
+      await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'submitIdea', name, text })
+      });
+      document.getElementById('ideaText').value = '';
+      document.getElementById('ideaName').value = '';
+      const toast = document.getElementById('ideaToast');
+      toast.classList.add('show');
+      setTimeout(()=> toast.classList.remove('show'), 4000);
+    }catch(err){
+      console.error('שגיאה בשליחת הרעיון:', err);
+      alert('לא הצלחנו לשלוח את הרעיון, נסו שוב.');
+    }
+    btn.disabled = false;
+    btn.textContent = 'שלחו את הרעיון';
+  }
+
   async function submitReview(){
     const name = document.getElementById('reviewName').value.trim();
     const text = document.getElementById('reviewText').value.trim();
@@ -1368,35 +1410,6 @@
     }
     btn.disabled = false;
     btn.textContent = 'פרסמו חוות דעת';
-  }
-
-  async function submitIdea(){
-    const name = document.getElementById('ideaName').value.trim();
-    const text = document.getElementById('ideaText').value.trim();
-    if(!text){
-      alert('נא לכתוב את ההצעה שלכם');
-      return;
-    }
-    const btn = document.getElementById('submitIdeaBtn');
-    btn.disabled = true;
-    btn.textContent = 'שולח...';
-    try{
-      await fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'submitIdea', name, text })
-      });
-      document.getElementById('ideaName').value = '';
-      document.getElementById('ideaText').value = '';
-      const toast = document.getElementById('ideaToast');
-      toast.classList.add('show');
-      setTimeout(()=> toast.classList.remove('show'), 4000);
-    }catch(err){
-      console.error('שגיאה בשליחת הצעה:', err);
-      alert('לא הצלחנו לשלוח את ההצעה, נסו שוב.');
-    }
-    btn.disabled = false;
-    btn.textContent = 'שלחו הצעה';
   }
 
   async function getRemainingUnits(){
