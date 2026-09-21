@@ -358,6 +358,9 @@
     width:100%;
   }
   .reserve-input:focus{outline:2px solid var(--pine); outline-offset:1px;}
+  .agent-code-label{
+    display:block; font-size:0.82rem; color:var(--ink-soft); margin:-4px 0 2px; text-align:right;
+  }
   .buy-cta{
     width:100%; background:var(--pine); color:var(--paper-card);
     border:none; padding:16px; border-radius:var(--radius);
@@ -753,6 +756,8 @@
         <div class="reserve-form">
           <input type="text" id="reserveName" class="reserve-input" placeholder="שם מלא">
           <input type="tel" id="reservePhone" class="reserve-input" placeholder="טלפון נייד (10 ספרות, לדוגמה 0501234567)" inputmode="numeric" maxlength="10" pattern="05[0-9]{8}">
+          <label for="reserveAgentCode" class="agent-code-label">האם הגעת דרך סוכן של החברה? (הזן קוד סוכן, או השאר ריק)</label>
+          <input type="text" id="reserveAgentCode" class="reserve-input" placeholder="קוד סוכן (רשות)">
         </div>
         <button class="buy-cta" id="reserveBtn" onclick="reserveUnit()">שריינו לי יחידה</button>
         <p class="buy-note">שיטת שריון מקום: לאחר מילוי הפרטים ניצור איתך קשר בוואטסאפ לאישור סופי ולשליחת בקשת תשלום מאובטחת ב-Bit. אין חיוב אוטומטי בשלב הזה.</p>
@@ -1239,13 +1244,14 @@
       document.getElementById('statLeft').textContent = String(Math.max(0, 5 - active));
 
       let html = '<table class="orders-table"><thead><tr>' +
-        '<th>שם</th><th>טלפון</th><th>תאריך</th><th>סטטוס</th><th></th>' +
+        '<th>שם</th><th>טלפון</th><th>קוד סוכן</th><th>תאריך</th><th>סטטוס</th><th></th>' +
         '</tr></thead><tbody>';
 
       for(const o of orders){
         html += '<tr>' +
           '<td>' + (o.name || '—') + '</td>' +
           '<td class="order-phone">' + (o.phone || '—') + '</td>' +
+          '<td>' + (o.agentCode ? o.agentCode : 'ללא סוכן') + '</td>' +
           '<td>' + formatDate(o.timestamp) + '</td>' +
           '<td><select class="status-select" onchange="updateStatus(' + o.row + ', this.value)">' +
             STATUS_OPTIONS.map(s => '<option value="' + s + '"' + (o.status === s ? ' selected' : '') + '>' + s + '</option>').join('') +
@@ -1454,6 +1460,7 @@
   async function reserveUnit(){
     const name = document.getElementById('reserveName').value.trim();
     const phone = document.getElementById('reservePhone').value.trim();
+    const agentCode = document.getElementById('reserveAgentCode').value.trim();
     if(!name || !phone){
       alert('נא למלא שם וטלפון כדי לשריין יחידה');
       return;
@@ -1478,10 +1485,11 @@
       await fetch(APPS_SCRIPT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ name, phone })
+        body: JSON.stringify({ name, phone, agentCode })
       });
       document.getElementById('reserveName').value = '';
       document.getElementById('reservePhone').value = '';
+      document.getElementById('reserveAgentCode').value = '';
     }catch(err){
       console.error('שגיאה בשמירת ההזמנה:', err);
     }
