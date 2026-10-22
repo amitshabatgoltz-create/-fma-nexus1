@@ -35,10 +35,11 @@ const uint8_t PIN_THERM  = A0;
 const unsigned long DEBOUNCE_MS   = 30;
 const unsigned long LONG_PRESS_MS = 2000;
 
-// Massage strength (PWM 0-255)
-const uint8_t MOTOR_LOW    = 110;
-const uint8_t MOTOR_MEDIUM = 170;
-const uint8_t MOTOR_HIGH   = 240;
+// Massage strength (PWM 0-255). Coin vibration motors are usually rated
+// for 3V, so the top level stays around 160 (~3V average from a 5V supply).
+const uint8_t MOTOR_LOW    = 80;
+const uint8_t MOTOR_MEDIUM = 120;
+const uint8_t MOTOR_HIGH   = 160;
 
 // Heat. Skin-safe: target never above 42°C, and the heater switches itself
 // off after HEAT_TIMEOUT_MS so it can't be left on by accident.
