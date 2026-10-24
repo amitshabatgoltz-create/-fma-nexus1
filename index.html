@@ -548,35 +548,6 @@
     .stats-row{grid-template-columns:1fr;}
   }
 
-  /* ---------- Live TikTok challenge banner ---------- */
-  .challenge-banner{
-    position:relative; overflow:hidden;
-    background:linear-gradient(100deg, var(--pine-dark), var(--pine) 40%, var(--brass-dark) 75%, var(--brass));
-    color:var(--paper-card);
-    text-align:center;
-    padding:12px 16px 14px;
-    font-size:0.98rem; line-height:1.5;
-  }
-  .challenge-banner::after{
-    content:""; position:absolute; inset:0;
-    background:linear-gradient(100deg, transparent 30%, rgba(255,255,255,0.18) 50%, transparent 70%);
-    transform:translateX(-100%);
-    animation:challengeShine 4.5s ease-in-out infinite;
-    pointer-events:none;
-  }
-  @keyframes challengeShine{ 0%,40%{transform:translateX(-100%);} 100%{transform:translateX(100%);} }
-  .challenge-main{font-weight:700; font-size:1.08rem;}
-  .challenge-main b{font-family:'Varela Round',serif; font-size:1.3rem; color:#FFE9B8;}
-  .challenge-main s{opacity:0.7; font-weight:400; margin-inline-start:4px;}
-  .challenge-sep{opacity:0.6; margin:0 8px;}
-  .challenge-progress{font-size:0.88rem; opacity:0.92; margin-top:2px;}
-  .live-price{display:inline-block;}
-  .challenge-bump{animation:challengeBump .7s ease;}
-  @keyframes challengeBump{ 0%{transform:scale(1);} 40%{transform:scale(1.18);} 100%{transform:scale(1);} }
-  @media (max-width:520px){
-    .challenge-sep{display:block; height:0; overflow:hidden;}
-    .challenge-main{font-size:1rem;}
-  }
   .sim-label{position:absolute; top:12px; left:12px; background:rgba(42,27,16,0.75); color:#F7F1E2;
     font-size:0.8rem; padding:4px 10px; border-radius:3px; z-index:3; pointer-events:none;}
 </style>
@@ -585,16 +556,6 @@
 
 <div id="siteRoot">
 
-<div class="challenge-banner" id="challengeBanner" role="status" aria-live="polite">
-  <div class="challenge-main">
-    🎉 אתגר הטיקטוק בעיצומו!
-    <span class="challenge-sep">·</span>
-    מחיר השקה עכשיו: <b>₪<span class="live-price">180</span></b><s id="challengeBaseStrike" style="display:none;"></s>
-    <span class="challenge-sep">·</span>
-    🚚 <span id="challengeShipping">משלוח VIP חינם נפתח עם כל 20 לייקים או 10 שמירות</span>
-  </div>
-  <div class="challenge-progress" id="challengeProgress">כל 10 תגובות בטיקטוק = ₪5 הנחה לכל הרוכשים</div>
-</div>
 
 <a href="https://mail.google.com/mail/?view=cm&fs=1&to=amitshabatgoltz@gmail.com&su=רוצה%20לבנות%20אתר" target="_blank" rel="noopener noreferrer" class="builder-badge" title="amitshabatgoltz@gmail.com">
   🌐 בונה אתרים? דברו איתי
@@ -1556,79 +1517,6 @@
     if(!wasOpen) item.classList.add('open');
   }
 
-  // ---------- Live TikTok challenge banner ----------
-  // Stats live in challenge.json (edit it on GitHub after checking TikTok).
-  // Rules: every 20 likes OR every 10 saves unlock one free VIP shipping
-  // (up to the drop size); every 10 valid comments (no spam repeats, no
-  // creator replies — count them before entering) take ₪5 off for everyone.
-  const CHALLENGE_DEFAULTS = { basePrice: 180, regularShipping: 30, units: 5, likes: 0, saves: 0, validComments: 0 };
-  let lastChallengePrice = null;
-
-  function computeChallenge(c){
-    const num = v => Math.max(0, Math.floor(Number(v) || 0));
-    const likes = num(c.likes), saves = num(c.saves), comments = num(c.validComments);
-    const units = num(c.units) || CHALLENGE_DEFAULTS.units;
-    const basePrice = num(c.basePrice) || CHALLENGE_DEFAULTS.basePrice;
-    const earned = Math.floor(likes / 20) + Math.floor(saves / 10);
-    return {
-      basePrice,
-      regularShipping: num(c.regularShipping) || CHALLENGE_DEFAULTS.regularShipping,
-      units,
-      price: Math.max(0, basePrice - 5 * Math.floor(comments / 10)),
-      freeShipping: Math.min(earned, units),
-      commentsToNext: 10 - (comments % 10),
-      likesToNext: 20 - (likes % 20),
-      savesToNext: 10 - (saves % 10)
-    };
-  }
-
-  function renderChallenge(c){
-    const r = computeChallenge(c);
-    document.querySelectorAll('.live-price').forEach(el => { el.textContent = r.price; });
-
-    const strike = document.getElementById('challengeBaseStrike');
-    if(r.price < r.basePrice){
-      strike.textContent = '₪' + r.basePrice;
-      strike.style.display = '';
-    } else {
-      strike.style.display = 'none';
-    }
-
-    const ship = document.getElementById('challengeShipping');
-    if(r.freeShipping >= r.units){
-      ship.textContent = 'כל ' + r.units + ' המשלוחים בדרופ — VIP חינם!';
-    } else if(r.freeShipping > 0){
-      ship.textContent = r.freeShipping + ' מתוך ' + r.units + ' משלוחי VIP חינם נפתחו (במקום ₪' + r.regularShipping + ')';
-    } else {
-      ship.textContent = 'משלוח VIP חינם נפתח עם כל 20 לייקים או 10 שמירות';
-    }
-
-    const parts = ['עוד ' + r.commentsToNext + ' תגובות = ₪5 הנחה לכולם'];
-    if(r.freeShipping < r.units){
-      parts.push('עוד ' + r.likesToNext + ' לייקים או ' + r.savesToNext + ' שמירות = משלוח חינם נוסף');
-    }
-    document.getElementById('challengeProgress').textContent = '🔥 ' + parts.join(' · ');
-
-    if(lastChallengePrice !== null && lastChallengePrice !== r.price){
-      document.querySelectorAll('.live-price').forEach(el => {
-        el.classList.remove('challenge-bump'); void el.offsetWidth; el.classList.add('challenge-bump');
-      });
-    }
-    lastChallengePrice = r.price;
-  }
-
-  async function loadChallenge(){
-    try{
-      const res = await fetch('challenge.json?t=' + Date.now(), { cache: 'no-store' });
-      if(!res.ok) throw new Error('HTTP ' + res.status);
-      renderChallenge(Object.assign({}, CHALLENGE_DEFAULTS, await res.json()));
-    }catch(err){
-      console.error('שגיאה בטעינת נתוני האתגר:', err);
-      if(lastChallengePrice === null) renderChallenge(CHALLENGE_DEFAULTS);
-    }
-  }
-  loadChallenge();
-  setInterval(loadChallenge, 60000);
 </script>
 
 </body>
