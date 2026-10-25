@@ -21,14 +21,14 @@
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   html{scroll-behavior:smooth;}
-  html{overflow-x:hidden;}
+  html{overflow-x:clip;}
   body{
     background:var(--paper);
     color:var(--ink);
     font-family:'Assistant', sans-serif;
     line-height:1.6;
     font-weight:400;
-    overflow-x:hidden;
+    overflow-x:clip;
     max-width:100vw;
   }
   h1,h2,h3,.display{
@@ -558,11 +558,11 @@
 
 
 <a href="https://mail.google.com/mail/?view=cm&fs=1&to=amitshabatgoltz@gmail.com&su=רוצה%20לבנות%20אתר" target="_blank" rel="noopener noreferrer" class="builder-badge" title="amitshabatgoltz@gmail.com">
-  🌐 בונה אתרים? דברו איתי
+  בונה אתרים? דברו איתי
 </a>
 
 <div class="build-note">
-  🚧 האתר מתעדכן: תמונות הכפפה הן הדמיה עד שיצולמו תמונות של היחידות האמיתיות.
+  האתר מתעדכן: תמונות הכפפה הן הדמיה עד שיצולמו תמונות של היחידות האמיתיות.
 </div>
 
 <header>
@@ -612,7 +612,7 @@
       <textarea id="ideaText" class="reserve-input idea-textarea" placeholder="ספרו לנו על הרעיון שלכם..." rows="4"></textarea>
       <input type="text" id="ideaName" class="reserve-input" placeholder="שם (רשות)">
       <button class="idea-submit-btn" onclick="submitIdea()">שלחו את הרעיון</button>
-      <div class="toast" id="ideaToast">תודה! הרעיון שלכם נשלח אלינו ✓</div>
+      <div class="toast" id="ideaToast">תודה! הרעיון שלכם נשלח אלינו</div>
     </div>
   </div>
 </section>
@@ -714,7 +714,7 @@
     <div id="reviewsGrid"><div class="loading-state">טוען חוות דעת…</div></div>
 
     <div class="write-review-toggle">
-      <button type="button" class="btn-ghost" id="writeReviewToggle" onclick="toggleReviewForm()">✎ כתבו חוות דעת</button>
+      <button type="button" class="btn-ghost" id="writeReviewToggle" onclick="toggleReviewForm()">כתבו חוות דעת</button>
     </div>
 
     <div class="review-form-card" id="reviewFormCard" style="display:none;">
@@ -729,13 +729,13 @@
       <input type="text" id="reviewName" class="reserve-input" placeholder="שם מלא">
       <textarea id="reviewText" class="reserve-input review-textarea" placeholder="מה דעתכם על המוצר?" rows="4"></textarea>
       <label class="photo-upload-label" for="reviewPhoto">
-        <span id="photoUploadText">📷 הוסיפו תמונה (רשות)</span>
+        <span id="photoUploadText">הוסיפו תמונה (רשות)</span>
         <input type="file" id="reviewPhoto" accept="image/*" onchange="handlePhotoSelect(this)">
       </label>
       <img id="photoPreview" style="display:none;">
       <button class="buy-cta" id="submitReviewBtn" onclick="submitReview()">פרסמו חוות דעת</button>
       <p class="buy-note">החוות דעת תופיע באתר לאחר אישור קצר שלנו (בדרך כלל תוך יום).</p>
-      <div class="toast" id="reviewToast">תודה! החוות דעת שלך תפורסם לאחר אישור ✓</div>
+      <div class="toast" id="reviewToast">תודה! החוות דעת שלך תפורסם לאחר אישור</div>
     </div>
   </div>
 </section>
@@ -770,8 +770,8 @@
       <div class="sold-out-note" id="soldOutNote" style="display:none;">
         כל 5 היחידות של Drop 01 שוריינו במלואן. עקבו אחרינו לעדכון על Drop 02.
       </div>
-      <div class="toast" id="cartToast">הפרטים נשמרו ✓ ניצור איתך קשר בוואטסאפ בקרוב</div>
-      <a href="https://mail.google.com/mail/?view=cm&fs=1&to=amitshabatgoltz@gmail.com&su=רוצה%20לבנות%20אתר" target="_blank" rel="noopener noreferrer" class="buy-card-promo">🌐 רוצים לבנות אתר כמו הזה? כתבו לי: amitshabatgoltz@gmail.com</a>
+      <div class="toast" id="cartToast">הפרטים נשמרו. ניצור איתך קשר בוואטסאפ בקרוב</div>
+      <a href="https://mail.google.com/mail/?view=cm&fs=1&to=amitshabatgoltz@gmail.com&su=רוצה%20לבנות%20אתר" target="_blank" rel="noopener noreferrer" class="buy-card-promo">רוצים לבנות אתר כמו הזה? כתבו לי: amitshabatgoltz@gmail.com</a>
     </div>
   </div>
 </section>
@@ -865,7 +865,7 @@
     </div>
 
     <div class="policy-disclaimer">
-      ⚠️ זוהי טיוטה גנרית ראשונית ואינה מהווה ייעוץ משפטי. מומלץ להיוועץ בעורך דין לפני עליית האתר לאוויר, כדי לוודא התאמה מלאה לדרישות החוק ולאופי הפעילות העסקית שלכם.
+      זוהי טיוטה גנרית ראשונית ואינה מהווה ייעוץ משפטי. מומלץ להיוועץ בעורך דין לפני עליית האתר לאוויר, כדי לוודא התאמה מלאה לדרישות החוק ולאופי הפעילות העסקית שלכם.
     </div>
   </div>
 </section>
@@ -967,7 +967,7 @@
     <div id="ideasList"><div class="loading-state">טוען רעיונות…</div></div>
 
     <div class="admin-disclaimer">
-      ⚠️ זהו פאנל ניהול פנימי בסיסי, מוגן בקוד כניסה פשוט — לא הצפנה אמיתית (מי שמסתכל בקוד המקור של העמוד יכול לראות את הקוד). מספיק כדי למנוע כניסה מקרית, לא בטוח מספיק ל"עסק אמיתי" עם מידע רגיש. לניהול הזמנות אמיתי בהמשך כדאי לחבר מערכת סליקה/CRM עם הרשאות משתמשים.
+      זהו פאנל ניהול פנימי בסיסי, מוגן בקוד כניסה פשוט — לא הצפנה אמיתית (מי שמסתכל בקוד המקור של העמוד יכול לראות את הקוד). מספיק כדי למנוע כניסה מקרית, לא בטוח מספיק ל"עסק אמיתי" עם מידע רגיש. לניהול הזמנות אמיתי בהמשך כדאי לחבר מערכת סליקה/CRM עם הרשאות משתמשים.
     </div>
   </div>
 </div>
@@ -1359,7 +1359,7 @@
         const preview = document.getElementById('photoPreview');
         preview.src = dataUrl;
         preview.style.display = 'block';
-        document.getElementById('photoUploadText').textContent = '📷 התמונה נבחרה ✓ (לחצו להחלפה)';
+        document.getElementById('photoUploadText').textContent = 'התמונה נבחרה (לחצו להחלפה)';
       };
       img.src = e.target.result;
     };
@@ -1419,7 +1419,7 @@
       document.getElementById('reviewName').value = '';
       document.getElementById('reviewText').value = '';
       document.getElementById('photoPreview').style.display = 'none';
-      document.getElementById('photoUploadText').textContent = '📷 הוסיפו תמונה (רשות)';
+      document.getElementById('photoUploadText').textContent = 'הוסיפו תמונה (רשות)';
       selectedPhotoBase64 = ''; selectedPhotoMime = '';
       setRating(0);
       const toast = document.getElementById('reviewToast');
@@ -1463,7 +1463,7 @@
       formWrap.style.display = 'block';
       soldOut.style.display = 'none';
       if(remaining === 1){
-        note.textContent = '🔥 נשארה יחידה אחת בלבד!';
+        note.textContent = 'נשארה יחידה אחת בלבד!';
         note.className = 'stock-note low';
       } else {
         note.textContent = '';
