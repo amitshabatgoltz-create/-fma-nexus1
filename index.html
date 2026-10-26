@@ -37,7 +37,7 @@
   a{color:inherit;}
   img{max-width:100%; display:block;}
   .wrap{max-width:1160px; margin:0 auto; padding:0 28px;}
-  @media (max-width:420px){ .wrap{padding:0 16px;} }
+  @media (max-width:420px){ .wrap{padding:0 22px;} }
   ::selection{background:var(--blue); color:#fff;}
   a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible{
     outline:2px solid var(--blue); outline-offset:3px;
@@ -510,6 +510,52 @@
   .mod-reject{background:transparent; color:var(--muted); border:1px solid var(--line-2);}
   .ltr-code{direction:ltr; unicode-bidi:isolate; font-family:monospace; background:rgba(255,255,255,0.08); padding:1px 6px; border-radius:4px;}
   @media (max-width:700px){ .orders-table{display:block; overflow-x:auto; white-space:nowrap;} .stats-row{grid-template-columns:1fr;} }
+  /* ---------- phone breathing room ---------- */
+  @media (max-width:760px){
+    body{line-height:1.7;}
+    .builder-badge{display:none;}
+    .build-note{font-size:0.8rem; padding:10px 22px;}
+    nav.wrap{height:64px;}
+    .hero{padding:40px 0 8px;}
+    .drop-pill{margin-bottom:22px; font-size:0.82rem;}
+    .hero h1{font-size:2.35rem; line-height:1.15; margin-bottom:18px;}
+    .hero p.lead{font-size:1.05rem; margin-bottom:28px;}
+    .hero-actions{flex-direction:column; width:100%; gap:12px;}
+    .hero-actions .btn-primary, .hero-actions .btn-ghost{width:100%; max-width:340px; justify-content:center;}
+    .price-note{margin-top:16px; font-size:0.88rem;}
+    .hero-stage{margin-top:48px; padding-bottom:8px;}
+    .hero-visual{width:88%;}
+    .video-accent{left:-8%; bottom:6%; width:30%;}
+    .video-accent-2{right:-6%; top:-7%; width:24%;}
+    .sound-toggle{width:30px; height:30px;}
+    .sound-toggle svg{width:14px; height:14px;}
+    .hero-visual .badge{position:static; transform:none; margin:28px auto 0; width:max-content;}
+    .marquee{margin-top:44px; padding:14px 0;}
+    .marquee span{font-size:1.05rem;}
+    section{padding:84px 0;}
+    .problem{padding:80px 0;}
+    .statements{gap:28px;}
+    .statements p{font-size:1.4rem; line-height:1.45;}
+    .section-head h2{font-size:2rem; line-height:1.2;}
+    .picker{margin-bottom:30px;}
+    .prog-panel{padding:30px 24px;}
+    .steps{gap:26px; margin-top:40px;}
+    .bento{gap:14px;}
+    .tile{min-height:0; padding:22px; display:grid; grid-template-columns:46px 1fr; column-gap:16px; align-items:start;}
+    .tile .feature-icon{margin-bottom:0; grid-row:span 2;}
+    .tile-big{display:flex; flex-direction:column; gap:18px; padding:26px 22px;}
+    .fingers{height:120px;}
+    .fingers i{width:28px;}
+    .drop-band{padding:0 0 84px;}
+    .drop-band-inner{padding:48px 24px;}
+    .buy-card{padding:30px 24px;}
+    .buy-list{gap:12px;}
+    .faq-item{padding:0 18px;}
+    .faq-q{font-size:1rem; line-height:1.5;}
+    .idea-box{padding:28px 22px;}
+    .policy-block{margin-bottom:30px;}
+    footer{padding-bottom:110px;}
+  }
 </style>
 </head>
 <body>
