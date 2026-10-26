@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FMA Tech — עיסוי וחימום ליד לנגני גיטרה</title>
+<title>FMA Tech — כפפת עיסוי וחימום לנגנים וגיימרים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Varela+Round&family=Assistant:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -14,6 +14,7 @@
     --ink-soft:#5A4634;
     --brass:#B4802E;
     --brass-dark:#8C6122;
+    --brass-deep:#85591C;
     --pine:#3E5443;
     --pine-dark:#2C3D30;
     --line: rgba(42,27,16,0.16);
@@ -44,7 +45,7 @@
   ::selection{background:var(--brass); color:var(--paper-card);}
 
   /* focus visibility */
-  a:focus-visible, button:focus-visible, input:focus-visible{
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible{
     outline:2px solid var(--pine);
     outline-offset:3px;
   }
@@ -69,7 +70,7 @@
     font-size:1.5rem; font-weight:700;
     letter-spacing:0.01em;
   }
-  .logo span{color:var(--brass);}
+  .logo span{color:var(--brass-deep);}
   .nav-links{display:flex; gap:32px; font-size:0.95rem; color:var(--ink-soft);}
   .nav-links a{text-decoration:none; transition:color .15s;}
   .nav-links a:hover{color:var(--ink);}
@@ -77,7 +78,7 @@
     background:var(--ink); color:var(--paper-card);
     padding:11px 22px; border-radius:var(--radius);
     font-size:0.9rem; text-decoration:none; border:none; cursor:pointer;
-    font-family:'Assistant',sans-serif; font-weight:600;
+    font-family:'Assistant',sans-serif; font-weight:600; min-height:44px; display:inline-flex; align-items:center;
   }
   @media (max-width:760px){ .nav-links{display:none;} }
 
@@ -105,13 +106,13 @@
   }
   .hero-actions{display:flex; gap:16px; align-items:center; flex-wrap:wrap;}
   .btn-primary{
-    background:var(--brass); color:var(--paper-card);
+    background:var(--brass-deep); color:var(--paper-card);
     padding:15px 30px; border-radius:var(--radius);
     font-weight:700; text-decoration:none; border:none; cursor:pointer;
     font-size:1rem; font-family:'Assistant',sans-serif;
     transition:background .15s;
   }
-  .btn-primary:hover{background:var(--brass-dark);}
+  .btn-primary:hover{background:var(--ink);}
   .btn-ghost{
     color:var(--ink); text-decoration:none; font-weight:600;
     border-bottom:1px solid var(--ink); padding-bottom:2px; font-size:0.98rem;
@@ -229,11 +230,11 @@
   .idea-box .reserve-input{margin-bottom:12px;}
   .idea-textarea{resize:vertical; font-family:'Assistant',sans-serif; text-align:right;}
   .idea-submit-btn{
-    width:100%; background:var(--brass); color:var(--paper-card); border:none;
+    width:100%; background:var(--brass-deep); color:var(--paper-card); border:none;
     padding:16px; border-radius:var(--radius); font-size:1.02rem; font-weight:700; cursor:pointer;
     font-family:'Assistant',sans-serif; transition:background .15s;
   }
-  .idea-submit-btn:hover{background:var(--brass-dark);}
+  .idea-submit-btn:hover{background:var(--ink);}
   @media (max-width:480px){ .idea-box{padding:26px 20px;} .idea-box h3{font-size:1.1rem;} }
 
   /* ---------- Problem ---------- */
@@ -241,7 +242,7 @@
   .problem-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:36px;}
   .problem-item{padding-top:2px;}
   .problem-item .num{
-    font-family:'Varela Round',serif; font-size:1.1rem; color:var(--brass);
+    font-family:'Varela Round',serif; font-size:1.1rem; color:var(--brass-deep);
     margin-bottom:10px; font-weight:700;
   }
   .problem-item h3{font-size:1.15rem; margin-bottom:8px;}
@@ -264,6 +265,10 @@
 
   /* ---------- Features ---------- */
   .features{background:var(--ink); color:var(--paper-card);}
+  .features-cta{margin-top:44px; display:flex; align-items:center; gap:18px; flex-wrap:wrap;}
+  .features-cta span{font-size:0.9rem; color:rgba(247,241,226,0.72);}
+  .btn-on-dark{background:var(--brass); color:var(--ink);}
+  .btn-on-dark:hover{background:var(--paper-card); color:var(--ink);}
   .features .section-head h2, .features .section-head p{color:var(--paper-card);}
   .features .section-head p{color:rgba(247,241,226,0.72);}
   .feature-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgba(247,241,226,0.14); border:1px solid rgba(247,241,226,0.14);}
@@ -282,13 +287,13 @@
   .testi-card p.quote{font-size:1.02rem; margin-bottom:18px; color:var(--ink);}
   .testi-card .who{font-size:0.88rem; color:var(--ink-soft); font-weight:600;}
   .testi-flag{
-    display:inline-block; font-size:0.68rem; color:var(--pine); background:rgba(62,84,67,0.1);
+    display:inline-block; font-size:0.75rem; color:var(--pine); background:rgba(62,84,67,0.1);
     padding:3px 8px; border-radius:2px; margin-bottom:14px; font-weight:600;
   }
   @media (max-width:760px){ .testi-grid{grid-template-columns:1fr;} }
 
   /* review card photo + stars */
-  .testi-card .review-stars{color:var(--brass); font-size:1.05rem; letter-spacing:2px; margin-bottom:10px;}
+  .testi-card .review-stars{color:var(--brass-deep); font-size:1.05rem; letter-spacing:2px; margin-bottom:10px;}
   .testi-card .review-photo{
     width:100%; max-height:220px; object-fit:cover; border-radius:var(--radius); margin-bottom:16px; display:block;
   }
@@ -309,7 +314,7 @@
     background:none; border:none; font-size:2rem; line-height:1; cursor:pointer; color:var(--line);
     transition:color .15s, transform .1s; padding:2px;
   }
-  .star-btn.active{color:var(--brass);}
+  .star-btn.active{color:var(--brass-deep);}
   .star-btn:hover{transform:scale(1.1);}
   .review-form-card .reserve-input{margin-bottom:12px;}
   .review-textarea{resize:vertical; font-family:'Assistant',sans-serif;}
@@ -393,7 +398,7 @@
     padding:22px 0; display:flex; justify-content:space-between; align-items:center;
     font-family:'Assistant',sans-serif; font-size:1.05rem; font-weight:600; color:var(--ink);
   }
-  .faq-q .plus{font-size:1.3rem; color:var(--brass); transition:transform .2s; font-weight:400;}
+  .faq-q .plus{font-size:1.3rem; color:var(--brass-deep); transition:transform .2s; font-weight:400;}
   .faq-item.open .faq-q .plus{transform:rotate(45deg);}
   .faq-a{
     max-height:0; overflow:hidden; transition:max-height .25s ease;
@@ -441,7 +446,7 @@
   @media (max-width:480px){
     .builder-badge{
       bottom:calc(12px + env(safe-area-inset-bottom, 0px));
-      left:12px; padding:9px 13px; font-size:0.68rem; min-height:34px;
+      left:12px; padding:9px 14px; font-size:0.75rem; min-height:44px;
     }
   }
   body.order-mode .builder-badge{display:none;}
@@ -471,7 +476,7 @@
     padding:26px 28px; margin-bottom:28px; text-align:center;
   }
   .visit-counter-num{
-    font-family:'Varela Round',serif; font-size:2.6rem; font-weight:700; color:var(--brass);
+    font-family:'Varela Round',serif; font-size:2.6rem; font-weight:700; color:var(--brass-deep);
     line-height:1.1;
   }
   .visit-counter-label{font-size:0.9rem; color:rgba(247,241,226,0.75); margin-top:4px;}
@@ -524,7 +529,7 @@
   }
   .review-mod-card img{width:70px; height:70px; object-fit:cover; border-radius:var(--radius); flex-shrink:0;}
   .review-mod-body{flex:1; min-width:200px;}
-  .review-mod-body .stars{color:var(--brass); margin-bottom:6px; letter-spacing:1px;}
+  .review-mod-body .stars{color:var(--brass-deep); margin-bottom:6px; letter-spacing:1px;}
   .review-mod-body .txt{font-size:0.94rem; margin-bottom:6px;}
   .review-mod-body .meta{font-size:0.8rem; color:var(--ink-soft);}
   .review-mod-actions{display:flex; gap:8px; flex-shrink:0;}
@@ -581,7 +586,7 @@
 <section class="hero">
   <div class="wrap">
     <div>
-      <div class="kicker">לנגני גיטרה שמרגישים את זה ביד</div>
+      <div class="kicker">לנגנים וגיימרים שמרגישים את זה ביד</div>
       <h1>סיימת לנגן.<br>עכשיו תנו ליד לנוח.</h1>
       <p class="lead">כפפת עיסוי, חימום ותאורה לנגנים וגיימרים. שלוש תוכניות בלחיצת כפתור, כדי לתת ליד הפסקה נעימה בין אימונים, הופעות וסשנים.</p>
       <div class="hero-actions">
@@ -601,18 +606,6 @@
       <button type="button" class="sound-toggle" id="soundToggle3" onclick="event.stopPropagation(); toggleSound3()" aria-label="הפעל קול"><svg id="soundIcon3" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/><line x1="16" y1="9" x2="22" y2="15" stroke="currentColor" stroke-width="2"/><line x1="22" y1="9" x2="16" y2="15" stroke="currentColor" stroke-width="2"/></svg></button>
       </div>
       <div class="badge">3 תוכניות · 2–6 דקות</div><div class="sim-label">הדמיה</div>
-    </div>
-  </div>
-</section>
-
-<section class="idea-box-section">
-  <div class="wrap">
-    <div class="idea-box">
-      <h3>יש לכם רעיון לפיצ'ר מטורף ל-FMA Nexus-Right? תכתבו לנו אותו כאן</h3>
-      <textarea id="ideaText" class="reserve-input idea-textarea" placeholder="ספרו לנו על הרעיון שלכם..." rows="4"></textarea>
-      <input type="text" id="ideaName" class="reserve-input" placeholder="שם (רשות)">
-      <button class="idea-submit-btn" onclick="submitIdea()">שלחו את הרעיון</button>
-      <div class="toast" id="ideaToast">תודה! הרעיון שלכם נשלח אלינו</div>
     </div>
   </div>
 </section>
@@ -700,6 +693,10 @@
         <h3>לנגנים ולגיימרים</h3>
         <p>גיטרה, בס, קלידים או מקלדת ועכבר: כל מי שהידיים שלו עובדות שעות.</p>
       </div>
+    </div>
+    <div class="features-cta">
+      <a href="#order" target="_blank" rel="noopener noreferrer" class="btn-primary btn-on-dark">שריינו יחידה ב-Drop 01</a>
+      <span>שריון בחינם · התשלום רק באישור הסופי</span>
     </div>
   </div>
 </section>
@@ -822,6 +819,18 @@
   </div>
 </section>
 
+<section class="idea-box-section">
+  <div class="wrap">
+    <div class="idea-box">
+      <h3>יש לכם רעיון לפיצ'ר מטורף ל-FMA Nexus-1? תכתבו לנו אותו כאן</h3>
+      <textarea id="ideaText" class="reserve-input idea-textarea" placeholder="ספרו לנו על הרעיון שלכם..." rows="4"></textarea>
+      <input type="text" id="ideaName" class="reserve-input" placeholder="שם (רשות)">
+      <button class="idea-submit-btn" onclick="submitIdea()">שלחו את הרעיון</button>
+      <div class="toast" id="ideaToast">תודה! הרעיון שלכם נשלח אלינו</div>
+    </div>
+  </div>
+</section>
+
 <section class="policy" id="policy">
   <div class="wrap" style="max-width:760px;">
     <div class="section-head">
@@ -897,7 +906,6 @@
     </p>
     <div class="footer-bottom">
       <span>© 2026 FMA Tech. כל הזכויות שמורות.</span>
-      <span>אתר לדוגמה בשלב פיתוח</span>
     </div>
   </div>
 </footer>
