@@ -1,0 +1,31 @@
+:root{--bg:#09090B; --card:#16161C; --line:rgba(255,255,255,0.09); --text:#F3F3F6; --muted:#A4A4B3; --led:#EEF4FF; --blue:#5B9BFF;}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{color-scheme:dark;}
+body{background:var(--bg); color:var(--text); font-family:'Heebo','Rubik',Arial,sans-serif; font-size:16px; line-height:1.75;}
+a{color:var(--led);}
+a:focus-visible, button:focus-visible{outline:2px solid var(--blue); outline-offset:3px;}
+.wrap{max-width:760px; margin:0 auto; padding:0 22px;}
+.skip-link{position:absolute; top:-100px; right:16px; background:var(--led); color:var(--bg); padding:10px 16px; border-radius:10px; font-weight:700; text-decoration:none;}
+.skip-link:focus{top:12px;}
+header{border-bottom:1px solid var(--line);}
+header nav{display:flex; justify-content:space-between; align-items:center; min-height:64px; gap:16px;}
+header nav a{min-height:44px; display:inline-flex; align-items:center;}
+.logo{font-weight:800; font-size:1.3rem; color:var(--text); text-decoration:none;}
+.logo span{color:var(--muted); font-weight:500;}
+main{padding-top:44px; padding-bottom:64px;}
+main:focus{outline:none;}
+h1{font-size:2rem; line-height:1.2; margin-bottom:14px;}
+h2{font-size:1.2rem; margin:32px 0 10px;}
+h3{font-size:1.05rem; margin:20px 0 8px;}
+p, li{color:var(--muted);}
+p{margin-bottom:10px;}
+.lead{font-size:1.08rem; color:var(--text);}
+ul{padding-inline-start:22px; display:grid; gap:6px; margin-bottom:10px;}
+table{width:100%; border-collapse:collapse; margin:8px 0 14px; font-size:0.95rem;}
+th, td{border-bottom:1px solid var(--line); padding:10px 8px; text-align:right; vertical-align:top;}
+th{color:var(--text);}
+td{color:var(--muted);}
+.meta{margin-top:32px; font-size:0.9rem;}
+footer{border-top:1px solid var(--line); padding:22px 0 40px; color:var(--muted); font-size:0.92rem;}
+footer a{display:inline-flex; min-height:44px; align-items:center;}
+@media (max-width:560px){ table, thead, tbody, tr, th, td{display:block;} thead{position:absolute; clip-path:inset(50%);} td{border:none; padding:4px 0;} tr{border-bottom:1px solid var(--line); padding:10px 0;} td:first-child{color:var(--text); font-weight:600;} }

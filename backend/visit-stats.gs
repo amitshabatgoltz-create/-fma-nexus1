@@ -17,7 +17,10 @@
  */
 
 const VISITS_SHEET_ = 'Visits';
-const VISIT_STATS_KEY_ = 'fma-nexus1-7q2k9x5w'; // same key the admin panel already sends
+// The admin password lives in Script Properties (see security.gs), never in code.
+function visitStatsKey_() {
+  return PropertiesService.getScriptProperties().getProperty('ADMIN_KEY');
+}
 const VISIT_TZ_ = 'Asia/Jerusalem';
 
 function visitsSheet_() {
@@ -51,7 +54,7 @@ function logVisit_(e) {
 function visitStats_(e) {
   const out = (obj) => ContentService.createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
-  if (!e || e.parameter.key !== VISIT_STATS_KEY_) return out({ error: 'unauthorized' });
+  if (!e || !visitStatsKey_() || e.parameter.key !== visitStatsKey_()) return out({ error: 'unauthorized' });
 
   const sh = visitsSheet_();
   const last = sh.getLastRow();

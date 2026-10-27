@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /new.html
+
+Sitemap: https://amitshabatgoltz-create.github.io/-fma-nexus1/sitemap.xml
