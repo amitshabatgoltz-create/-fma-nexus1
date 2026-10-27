@@ -4,10 +4,12 @@
  *
  * Wiring, inside the existing doGet(e) in Code.gs:
  *   1. Replace   if (type === 'trackVisit') return trackVisit();
- *      with      if (type === 'trackVisit') { logVisit_(e); return trackVisit(); }
+ *      with      if (type === 'trackVisit') { try { logVisit_(e); } catch (err) {} return trackVisit(); }
  *   2. Under it add:
  *                if (type === 'visitStats') return visitStats_(e);
- *   3. Deploy > Manage deployments > edit the current deployment >
+ *   3. Pick setupVisits in the function menu at the top, press Run and allow
+ *      the permissions Google asks for (it creates the Visits sheet).
+ *   4. Deploy > Manage deployments > edit the current deployment >
  *      Version: New version > Deploy (the /exec URL stays the same).
  *
  * Visits are stored in a sheet named "Visits" (created on first use):
@@ -34,6 +36,11 @@ function visitsSheet_() {
     sh.appendRow(['time', 'visitor']);
   }
   return sh;
+}
+
+// Run once from the editor: creates the Visits sheet and grants permissions.
+function setupVisits() {
+  visitsSheet_();
 }
 
 function logVisit_(e) {
