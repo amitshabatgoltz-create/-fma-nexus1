@@ -510,6 +510,37 @@
   .mod-reject{background:transparent; color:var(--muted); border:1px solid var(--line-2);}
   .ltr-code{direction:ltr; unicode-bidi:isolate; font-family:monospace; background:rgba(255,255,255,0.08); padding:1px 6px; border-radius:4px;}
   @media (max-width:700px){ .orders-table{display:block; overflow-x:auto; white-space:nowrap;} .stats-row{grid-template-columns:1fr;} }
+  /* ---------- what's in the box ---------- */
+  .inbox{background:var(--bg-2); border-block:1px solid var(--line); overflow:hidden;}
+  .inbox-grid{display:grid; grid-template-columns:1.1fr 0.9fr; gap:48px; align-items:center;}
+  .inbox-art{max-width:520px; width:100%; margin:0 auto;}
+  .box-svg{width:100%; height:auto; display:block; overflow:visible;}
+  .box-layer{pointer-events:none; transition:opacity .3s var(--ease);}
+  .box-hit{fill:transparent; cursor:pointer; outline:none;}
+  .box-hit:focus-visible{stroke:var(--blue); stroke-width:3;}
+  .box-layer .lift{transform-box:view-box; transition:transform .45s var(--ease), filter .3s var(--ease);}
+  .box-layer.above .lift{transform:translateY(-46px);}
+  .box-layer.active .lift{transform:translateY(-16px) scale(1.04); transform-origin:50% 60%; filter:drop-shadow(0 0 18px rgba(238,244,255,0.28));}
+  .box-svg.has-active .box-layer:not(.active){opacity:0.42;}
+  .box-layer[data-item="glove"] .led{filter:drop-shadow(0 0 4px rgba(238,244,255,0.9));}
+  .inbox-panel{background:var(--card); border:1px solid var(--line-2); border-radius:22px; padding:32px 30px; min-height:300px;}
+  .inbox-step{font-size:0.85rem; color:var(--muted); font-weight:600; display:block; margin-bottom:10px;}
+  .inbox-panel h3{font-size:1.6rem; margin-bottom:12px;}
+  .inbox-panel p{color:var(--muted); font-size:1.02rem; margin-bottom:16px;}
+  .inbox-panel ul{list-style:none; display:grid; gap:9px; margin-bottom:22px;}
+  .inbox-panel li{display:flex; gap:10px; font-size:0.96rem;}
+  .inbox-panel li::before{content:""; flex-shrink:0; width:7px; height:7px; border-radius:50%; background:var(--led); margin-top:10px; box-shadow:0 0 8px rgba(238,244,255,0.7);}
+  .inbox-dots{display:flex; gap:6px;}
+  .inbox-dots button{width:44px; height:44px; border:none; background:none; cursor:pointer; position:relative; padding:0;}
+  .inbox-dots button::before{content:""; position:absolute; inset:18px 12px; border-radius:4px; background:var(--line-2); transition:background .2s;}
+  .inbox-dots button[aria-pressed="true"]::before{background:var(--led);}
+  @media (max-width:860px){
+    .inbox-grid{grid-template-columns:1fr; gap:20px;}
+    .inbox-art{max-width:400px;}
+    .inbox-panel{min-height:0; padding:26px 22px;}
+    .inbox-panel h3{font-size:1.35rem;}
+  }
+
   /* ---------- phone breathing room ---------- */
   @media (max-width:760px){
     body{line-height:1.7;}
@@ -577,6 +608,7 @@
     <div class="nav-links">
       <a href="#how">התוכניות</a>
       <a href="#features">מה יש בפנים</a>
+      <a href="#inbox">בקופסה</a>
       <a href="#reviews">חוות דעת</a>
       <a href="#faq">שאלות נפוצות</a>
     </div>
@@ -712,6 +744,32 @@
         <div>
           <h3>לנגנים ולגיימרים</h3>
           <p>גיטרה, בס, קלידים או מקלדת ועכבר: כל מי שהידיים שלו עובדות שעות.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="inbox" id="inbox">
+  <div class="wrap">
+    <div class="section-head center">
+      <span class="eyebrow">מה מגיע בקופסה</span>
+      <h2>פותחים, ומתחילים.</h2>
+      <p>העבירו את העכבר על שכבה, או לחצו עליה, כדי לראות מה זה.</p>
+    </div>
+    <div class="inbox-grid">
+      <div class="inbox-art"><svg class="box-svg" viewBox="0 20 540 840" role="group" aria-label="מה מגיע בקופסה"><g class="box-layer box-base" data-item="box"><g class="lift"><polygon points="235.4,485.0 469.2,620.0 469.2,710.0 235.4,575.0" fill="#0a0a0d" /><polygon points="235.4,485.0 70.8,580.0 70.8,670.0 235.4,575.0" fill="#08080b" /><polygon points="235.4,575.0 469.2,710.0 304.6,805.0 70.8,670.0" fill="#050507" /><polygon points="235.4,485.0 469.2,620.0 503.8,530.0 270.0,395.0" fill="#17171d" stroke="rgba(255,255,255,0.08)"/><polygon points="235.4,485.0 70.8,580.0 36.2,490.0 200.7,395.0" fill="#131318" stroke="rgba(255,255,255,0.08)"/><polygon points="70.8,580.0 304.6,715.0 304.6,805.0 70.8,670.0" fill="#15151b" stroke="rgba(255,255,255,0.10)"/><polygon points="469.2,620.0 304.6,715.0 304.6,805.0 469.2,710.0" fill="#101015" stroke="rgba(255,255,255,0.10)"/><polygon points="70.8,580.0 304.6,715.0 252.7,775.0 18.9,640.0" fill="#1c1c23" stroke="rgba(255,255,255,0.10)"/><polygon points="469.2,620.0 304.6,715.0 356.6,775.0 521.1,680.0" fill="#18181e" stroke="rgba(255,255,255,0.10)"/><text x="-101.0" y="0" transform="matrix(0.866,0.5,0,1,187.7,703.3)" font-family="Rubik, sans-serif" font-weight="800" font-size="28" fill="#EEF4FF" opacity="0.9">FMA</text></g></g><g class="box-layer" data-item="cushion"><g class="lift"><polygon points="105.5,510.0 304.6,625.0 304.6,635.0 105.5,520.0" fill="#121218" stroke="rgba(255,255,255,0.10)" stroke-width="1"/><polygon points="434.5,550.0 304.6,625.0 304.6,635.0 434.5,560.0" fill="#0d0d12" stroke="rgba(255,255,255,0.10)" stroke-width="1"/><polygon points="235.4,435.0 434.5,550.0 304.6,625.0 105.5,510.0" fill="#1A1A21" stroke="rgba(255,255,255,0.10)" stroke-width="1"/><g transform="matrix(0.866,0.5,-0.866,0.5,270,530)"><rect x="-96" y="-58" width="192" height="116" rx="44" fill="#2B2B35"/><rect x="-84" y="-46" width="168" height="92" rx="36" fill="none" stroke="#45455280" stroke-width="2" stroke-dasharray="6 6"/><ellipse cx="-20" cy="-18" rx="60" ry="22" fill="rgba(255,255,255,0.06)"/></g></g></g><g class="box-layer" data-item="cable"><g class="lift"><polygon points="105.5,390.0 304.6,505.0 304.6,515.0 105.5,400.0" fill="#121218" stroke="rgba(255,255,255,0.10)" stroke-width="1"/><polygon points="434.5,430.0 304.6,505.0 304.6,515.0 434.5,440.0" fill="#0d0d12" stroke="rgba(255,255,255,0.10)" stroke-width="1"/><polygon points="235.4,315.0 434.5,430.0 304.6,505.0 105.5,390.0" fill="#1A1A21" stroke="rgba(255,255,255,0.10)" stroke-width="1"/><g transform="matrix(0.866,0.5,-0.866,0.5,270,410)"><circle cx="-10" cy="0" r="24" fill="none" stroke="#D8D8E0" stroke-width="5"/><circle cx="-10" cy="0" r="38" fill="none" stroke="#D8D8E0" stroke-width="5"/><circle cx="-10" cy="0" r="52" fill="none" stroke="#D8D8E0" stroke-width="5"/><path d="M 42 0 C 60 0, 70 -20, 86 -20" fill="none" stroke="#D8D8E0" stroke-width="5" stroke-linecap="round"/><rect x="84" y="-29" width="26" height="18" rx="5" fill="#A4A4B3"/><rect x="108" y="-25" width="8" height="10" rx="2" fill="#6A6A78"/></g></g></g><g class="box-layer" data-item="glove"><g class="lift"><polygon points="105.5,265.0 304.6,380.0 304.6,390.0 105.5,275.0" fill="#121218" stroke="rgba(255,255,255,0.10)" stroke-width="1"/><polygon points="434.5,305.0 304.6,380.0 304.6,390.0 434.5,315.0" fill="#0d0d12" stroke="rgba(255,255,255,0.10)" stroke-width="1"/><polygon points="235.4,190.0 434.5,305.0 304.6,380.0 105.5,265.0" fill="#1D1D25" stroke="rgba(255,255,255,0.10)" stroke-width="1"/><g transform="matrix(0.866,0.5,-0.866,0.5,270,285)"><rect x="-96" y="-66" width="20" height="132" rx="5" fill="#2A2A33"/><rect x="-80" y="-48" width="104" height="96" rx="22" fill="#1E1E26" stroke="#55556A" stroke-width="2"/><rect x="14" y="-45" width="70" height="18" rx="9" fill="#1E1E26" stroke="#55556A" stroke-width="2"/><rect x="14" y="-21" width="84" height="18" rx="9" fill="#1E1E26" stroke="#55556A" stroke-width="2"/><rect x="14" y="3" width="80" height="18" rx="9" fill="#1E1E26" stroke="#55556A" stroke-width="2"/><rect x="14" y="27" width="64" height="18" rx="9" fill="#1E1E26" stroke="#55556A" stroke-width="2"/><rect x="-46" y="-80" width="56" height="18" rx="9" fill="#1E1E26" stroke="#55556A" stroke-width="2" transform="rotate(-24 -18 -71)"/><line x1="24" y1="-36" x2="76" y2="-36" stroke="#EEF4FF" stroke-width="4" stroke-linecap="round" class="led"/><line x1="24" y1="-12" x2="90" y2="-12" stroke="#EEF4FF" stroke-width="4" stroke-linecap="round" class="led"/><line x1="24" y1="12" x2="86" y2="12" stroke="#EEF4FF" stroke-width="4" stroke-linecap="round" class="led"/><line x1="24" y1="36" x2="70" y2="36" stroke="#EEF4FF" stroke-width="4" stroke-linecap="round" class="led"/><line x1="-36" y1="-76" x2="2" y2="-76" stroke="#EEF4FF" stroke-width="4" stroke-linecap="round" class="led" transform="rotate(-24 -18 -71)"/><rect x="-66" y="-28" width="52" height="56" rx="8" fill="#0B0B0F" stroke="#4A4A58" stroke-width="2"/><circle cx="-40" cy="-14" r="6" fill="#3DDC84"/><circle cx="-40" cy="0" r="6" fill="#5B9BFF"/><circle cx="-40" cy="14" r="6" fill="#FF5C5C"/></g></g></g><g class="box-layer" data-item="guide"><g class="lift"><polygon points="105.5,135.0 304.6,250.0 304.6,260.0 105.5,145.0" fill="#121218" stroke="rgba(255,255,255,0.10)" stroke-width="1"/><polygon points="434.5,175.0 304.6,250.0 304.6,260.0 434.5,185.0" fill="#0d0d12" stroke="rgba(255,255,255,0.10)" stroke-width="1"/><polygon points="235.4,60.0 434.5,175.0 304.6,250.0 105.5,135.0" fill="#1A1A21" stroke="rgba(255,255,255,0.10)" stroke-width="1"/><g transform="matrix(0.866,0.5,-0.866,0.5,270,155)"><rect x="-100" y="-66" width="200" height="132" rx="6" fill="#F3F3F6"/><rect x="-88" y="-52" width="100" height="6" rx="3" fill="#C9C9D4"/><rect x="-88" y="-36" width="70" height="6" rx="3" fill="#C9C9D4"/><rect x="-88" y="-20" width="100" height="6" rx="3" fill="#C9C9D4"/><rect x="-88" y="-4" width="70" height="6" rx="3" fill="#C9C9D4"/><rect x="-88" y="12" width="100" height="6" rx="3" fill="#C9C9D4"/><rect x="-88" y="28" width="70" height="6" rx="3" fill="#C9C9D4"/><rect x="30" y="-44" width="58" height="58" rx="3" fill="#09090B"/><rect x="42.5" y="-40.0" width="7" height="7" fill="#F3F3F6"/><rect x="51.0" y="-40.0" width="7" height="7" fill="#F3F3F6"/><rect x="68.0" y="-40.0" width="7" height="7" fill="#F3F3F6"/><rect x="76.5" y="-40.0" width="7" height="7" fill="#F3F3F6"/><rect x="34.0" y="-31.5" width="7" height="7" fill="#F3F3F6"/><rect x="42.5" y="-31.5" width="7" height="7" fill="#F3F3F6"/><rect x="59.5" y="-31.5" width="7" height="7" fill="#F3F3F6"/><rect x="68.0" y="-31.5" width="7" height="7" fill="#F3F3F6"/><rect x="34.0" y="-23.0" width="7" height="7" fill="#F3F3F6"/><rect x="51.0" y="-23.0" width="7" height="7" fill="#F3F3F6"/><rect x="59.5" y="-23.0" width="7" height="7" fill="#F3F3F6"/><rect x="76.5" y="-23.0" width="7" height="7" fill="#F3F3F6"/><rect x="42.5" y="-14.5" width="7" height="7" fill="#F3F3F6"/><rect x="51.0" y="-14.5" width="7" height="7" fill="#F3F3F6"/><rect x="68.0" y="-14.5" width="7" height="7" fill="#F3F3F6"/><rect x="76.5" y="-14.5" width="7" height="7" fill="#F3F3F6"/><rect x="34.0" y="-6.0" width="7" height="7" fill="#F3F3F6"/><rect x="42.5" y="-6.0" width="7" height="7" fill="#F3F3F6"/><rect x="59.5" y="-6.0" width="7" height="7" fill="#F3F3F6"/><rect x="68.0" y="-6.0" width="7" height="7" fill="#F3F3F6"/><rect x="34.0" y="2.5" width="7" height="7" fill="#F3F3F6"/><rect x="51.0" y="2.5" width="7" height="7" fill="#F3F3F6"/><rect x="59.5" y="2.5" width="7" height="7" fill="#F3F3F6"/><rect x="76.5" y="2.5" width="7" height="7" fill="#F3F3F6"/><rect x="30" y="24" width="58" height="8" rx="3" fill="#5B9BFF"/></g></g></g><g class="hits"><polygon class="box-hit" data-item="box" points="18.9,640.0 36.2,490.0 200.7,395.0 270.0,395.0 503.8,530.0 521.1,680.0 469.2,710.0 356.6,775.0 304.6,805.0 70.8,670.0" tabindex="0" role="button" aria-label="הקופסה" aria-pressed="false"/><polygon class="box-hit" data-item="cushion" points="235.4,435.0 434.5,550.0 304.6,625.0 304.6,635.0 105.5,520.0 105.5,510.0" tabindex="0" role="button" aria-label="כרית לשורש כף היד" aria-pressed="false"/><polygon class="box-hit" data-item="cable" points="235.4,315.0 434.5,430.0 304.6,505.0 304.6,515.0 105.5,400.0 105.5,390.0" tabindex="0" role="button" aria-label="כבל טעינה" aria-pressed="false"/><polygon class="box-hit" data-item="glove" points="235.4,190.0 434.5,305.0 304.6,380.0 304.6,390.0 105.5,275.0 105.5,265.0" tabindex="0" role="button" aria-label="כפפת FMA Nexus-1" aria-pressed="false"/><polygon class="box-hit" data-item="guide" points="235.4,60.0 434.5,175.0 304.6,250.0 304.6,260.0 105.5,145.0 105.5,135.0" tabindex="0" role="button" aria-label="מדריך שימוש קצר" aria-pressed="false"/></g></svg></div>
+      <div class="inbox-panel" aria-live="polite">
+        <span class="inbox-step" id="inboxStep">1 מתוך 5</span>
+        <h3 id="inboxName">כפפת FMA Nexus-1</h3>
+        <p id="inboxDesc"></p>
+        <ul id="inboxList"></ul>
+        <div class="inbox-dots" role="group" aria-label="פריטים בקופסה">
+          <button type="button" data-item="guide" aria-label="מדריך שימוש קצר"></button>
+          <button type="button" data-item="glove" aria-label="כפפת FMA Nexus-1"></button>
+          <button type="button" data-item="cable" aria-label="כבל טעינה"></button>
+          <button type="button" data-item="cushion" aria-label="כרית לשורש כף היד"></button>
+          <button type="button" data-item="box" aria-label="הקופסה"></button>
         </div>
       </div>
     </div>
@@ -1593,6 +1651,55 @@
         bar.classList.toggle('show', !entries[0].isIntersecting);
       }).observe(hero);
     }
+  })();
+</script>
+<script>
+  // What's in the box: exploded layers + details panel
+  (function(){
+    const ITEMS = {
+      guide:   {n:1, name:'מדריך שימוש קצר', desc:'דף אחד עם כל מה שצריך: מה עושה כל כפתור, איך מטעינים ואיך שומרים על הכפפה.', list:['ברקוד שמוביל למדריך המלא','הוראות בטיחות לשימוש בחימום']},
+      glove:   {n:2, name:'כפפת FMA Nexus-1', desc:'כפפה סרוגה שחורה, עם מארז בקרה קטן על גב היד שכבר מחובר אליה.', list:['5 מנועי רטט, אחד לכל אצבע','17 סגנונות רטט שמתחלפים באקראיות','3 כפתורים: תוכניות של 2, 4 ו-6 דקות','פסי לד לבנים וחימום מבוקר עם חיישן','רצועה מתכווננת לשורש כף היד']},
+      cable:   {n:3, name:'כבל טעינה Type-C', desc:'כבל לטעינת הכפפה ממטען USB, כמו של טלפון.', list:['הכפפה נטענת דרך שקע Type-C במארז','סוללה מלאה מספיקה לכמה תוכניות']},
+      cushion: {n:4, name:'כרית לשורש כף היד', desc:'כרית רכה שמניחים עליה את היד בזמן שהתוכנית עובדת.', list:[]},
+      box:     {n:5, name:'הקופסה של Drop 01', desc:'ב-Drop 01 הכפפה מגיעה בקופסה שחורה מיוחדת, רק ל-5 הכפפות של הסבב הראשון.', list:['כל כפפה נבדקת ידנית לפני שהיא נארזת']}
+    };
+    const svg = document.querySelector('.box-svg');
+    if(!svg) return;
+    const layers = Array.from(svg.querySelectorAll('.box-layer'));
+    const hits = Array.from(svg.querySelectorAll('.box-hit'));
+    const dots = Array.from(document.querySelectorAll('.inbox-dots button'));
+    let pinned = 'glove';
+    function show(key, highlight){
+      const it = ITEMS[key];
+      const idx = layers.findIndex(function(l){ return l.dataset.item === key; });
+      layers.forEach(function(l, i){
+        const on = highlight && i === idx;
+        l.classList.toggle('active', on);
+        l.classList.toggle('above', highlight && i > idx);
+      });
+      svg.classList.toggle('has-active', !!highlight);
+      hits.concat(dots).forEach(function(d){ d.setAttribute('aria-pressed', d.dataset.item === key ? 'true' : 'false'); });
+      document.getElementById('inboxStep').textContent = it.n + ' מתוך 5';
+      document.getElementById('inboxName').textContent = it.name;
+      document.getElementById('inboxDesc').textContent = it.desc;
+      const ul = document.getElementById('inboxList');
+      ul.innerHTML = '';
+      it.list.forEach(function(t){ const li = document.createElement('li'); li.textContent = t; ul.appendChild(li); });
+      ul.style.display = it.list.length ? '' : 'none';
+    }
+    function pin(key){ pinned = key; show(key, true); }
+    const hover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    hits.forEach(function(l){
+      if(hover){
+        l.addEventListener('mouseenter', function(){ show(l.dataset.item, true); });
+        l.addEventListener('mouseleave', function(){ show(pinned, false); });
+      }
+      l.addEventListener('click', function(){ pin(l.dataset.item); });
+      l.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); pin(l.dataset.item); } });
+      l.addEventListener('focus', function(){ show(l.dataset.item, true); });
+    });
+    dots.forEach(function(d){ d.addEventListener('click', function(){ pin(d.dataset.item); }); });
+    show(pinned, false);
   })();
 </script>
 </body>
