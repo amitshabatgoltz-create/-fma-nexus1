@@ -1731,6 +1731,39 @@
       blue:  {min:'4', name:'חימום לפני נגינה', desc:'רטט מאוזן שמכין את היד, כדי להתחיל את הסשן עם אצבעות מוכנות.'},
       red:   {min:'6', name:'שחרור אחרי סשן', desc:'התוכנית הארוכה והעוצמתית: מתחילה בעדינות, מתחזקת באמצע ונרגעת לקראת הסוף.'}
     };
+    // A taste of each program, from the glove firmware: green rolls gently,
+    // blue is balanced, red hammers (700 ms on / 400 ms off). Values are
+    // [on, off, on, ...] in ms; amp is the screen-shake size in px.
+    const TASTE = {
+      green: {pattern:[70,50,70,50,70,50,110], amp:1.2},
+      blue:  {pattern:[140,70,140,70,200], amp:2.2},
+      red:   {pattern:[320,140,320,140,450], amp:3.6}
+    };
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const canBuzz = 'vibrate' in navigator && window.matchMedia('(pointer: coarse)').matches;
+    function shake(el, t){
+      if(reduceMotion || !el.animate) return;
+      const frames = [], total = t.pattern.reduce(function(a,b){ return a+b; }, 0);
+      let at = 0;
+      t.pattern.forEach(function(ms, i){
+        if(i % 2 === 0){
+          for(let k = 0; k < ms; k += 30){
+            const x = (k / 30) % 2 ? t.amp : -t.amp;
+            frames.push({transform:'translate(' + x + 'px,' + (-x / 2) + 'px)', offset:(at + k) / total});
+          }
+        }
+        at += ms;
+        frames.push({transform:'translate(0,0)', offset:Math.min(at / total, 1)});
+      });
+      frames[0].offset = 0;
+      el.animate(frames, {duration:total, easing:'linear'});
+    }
+    function taste(key, btn){
+      const t = TASTE[key];
+      if(canBuzz && navigator.vibrate(t.pattern)) { shake(btn, {pattern:t.pattern, amp:t.amp / 2}); return; }
+      shake(panel, t);
+      shake(btn, t);
+    }
     const panel = document.getElementById('progPanel');
     document.querySelectorAll('.pick').forEach(function(btn){
       btn.addEventListener('click', function(){
@@ -1740,6 +1773,7 @@
         document.getElementById('progMin').textContent = p.min;
         document.getElementById('progName').textContent = p.name;
         document.getElementById('progDesc').textContent = p.desc;
+        taste(key, btn);
       });
     });
     // Mobile reserve bar: show once the hero is scrolled past
