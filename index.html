@@ -496,6 +496,9 @@
   .admin-gate-label{display:block; font-size:0.92rem; color:var(--muted); margin-bottom:12px;}
   .admin-gate-input{width:100%; text-align:center; letter-spacing:2px; font-size:1.1rem; padding:14px; border:1px solid var(--line-2); border-radius:var(--radius-sm); margin-bottom:16px; font-family:'Heebo',sans-serif; background:var(--bg); color:var(--text);}
   .admin-gate-input:focus{outline:2px solid var(--blue);}
+  .admin-remember{display:flex; align-items:center; justify-content:center; gap:10px; min-height:44px; margin:-4px 0 12px; font-size:0.92rem; color:var(--text); cursor:pointer;}
+  .admin-remember input{width:20px; height:20px; accent-color:var(--led);}
+  .admin-gate-note{font-size:0.8rem; color:var(--muted); margin-top:10px;}
   .admin-gate-error{color:var(--red); font-size:0.86rem; margin-top:12px;}
   .admin-header{position:static; background:none; backdrop-filter:none; border:none; display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; flex-wrap:wrap; gap:12px;}
   .admin-exit{font-size:0.88rem; color:var(--muted); text-decoration:underline; padding:10px 4px;}
@@ -1221,7 +1224,9 @@
       <h1 class="logo" style="margin-bottom:18px;">FMA <span>Tech</span> · ניהול</h1>
       <label class="admin-gate-label" for="adminPinInput">סיסמת ניהול</label>
       <input type="password" id="adminPinInput" class="admin-gate-input" autocomplete="current-password" onkeydown="if(event.key==='Enter') checkAdminPin();">
+      <label class="admin-remember"><input type="checkbox" id="adminRemember"> זכור אותי במכשיר הזה</label>
       <button class="buy-cta" onclick="checkAdminPin()">כניסה</button>
+      <p class="admin-gate-note">סמנו רק במכשיר אישי. כדי לצאת, לוחצים "יציאה" בפאנל.</p>
       <p class="admin-gate-error" id="adminGateError" role="alert" style="display:none;">סיסמה שגויה, נסו שוב.</p>
     </div>
   </div>
@@ -1302,7 +1307,8 @@
   // The admin password is never stored in the page: it is typed at login, checked by the
   // Apps Script server, and kept only in this browser tab's sessionStorage.
   let ADMIN_KEY = '';
-  try{ ADMIN_KEY = sessionStorage.getItem('fmaAdminKey') || ''; }catch(e){}
+  // "Remember me" keeps it in localStorage on that device until Exit is pressed.
+  try{ ADMIN_KEY = sessionStorage.getItem('fmaAdminKey') || localStorage.getItem('fmaAdminKey') || ''; }catch(e){}
   let videoSwipeStartY = null;
   document.addEventListener('touchstart', function(e){
     if(document.getElementById('videoRoot').style.display === 'flex'){
@@ -1350,6 +1356,9 @@
     document.getElementById('adminRoot').style.display = 'block';
     if(ADMIN_KEY){
       unlockAdmin();
+      // A remembered password that the server no longer accepts (it was changed) sends you back to the login.
+      fetch(APPS_SCRIPT_URL + '?type=ideas&key=' + encodeURIComponent(ADMIN_KEY))
+        .then(r => r.json()).then(d => { if(d && d.error){ forgetAdmin(); showAdmin(); } }).catch(() => {});
     } else {
       document.getElementById('adminGate').style.display = 'flex';
       document.getElementById('adminContentWrap').style.display = 'none';
@@ -1380,7 +1389,10 @@
     }
     if(ok){
       ADMIN_KEY = val;
-      try{ sessionStorage.setItem('fmaAdminKey', val); }catch(e){}
+      try{
+        sessionStorage.setItem('fmaAdminKey', val);
+        if(document.getElementById('adminRemember').checked) localStorage.setItem('fmaAdminKey', val);
+      }catch(e){}
       adminFails = 0;
       unlockAdmin();
     } else {
@@ -1532,10 +1544,14 @@
       items[(i + (e.shiftKey ? items.length - 1 : 1)) % items.length].focus();
     }
   });
+  function forgetAdmin(){
+    ADMIN_KEY = '';
+    try{ sessionStorage.removeItem('fmaAdminKey'); localStorage.removeItem('fmaAdminKey'); }catch(err){}
+  }
   function exitAdmin(e){
     if(e) e.preventDefault();
     ADMIN_KEY = '';
-    try{ sessionStorage.removeItem('fmaAdminKey'); }catch(err){}
+    forgetAdmin();
     window.location.hash = '';
     showNormal();
   }
