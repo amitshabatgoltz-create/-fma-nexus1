@@ -509,6 +509,34 @@
   .mod-approve{background:var(--green); color:var(--bg);}
   .mod-reject{background:transparent; color:var(--muted); border:1px solid var(--line-2);}
   .ltr-code{direction:ltr; unicode-bidi:isolate; font-family:monospace; background:rgba(255,255,255,0.08); padding:1px 6px; border-radius:4px;}
+  /* admin traffic charts */
+  .traffic{position:relative; margin-bottom:32px;}
+  .traffic-tiles{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:16px;}
+  .t-tile{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px;}
+  .t-tile .t-label{display:block; font-size:0.9rem; color:var(--muted);}
+  .t-tile b{font-family:'Rubik',sans-serif; font-size:2.4rem; font-weight:800; line-height:1.15; color:var(--text);}
+  .t-tile .t-peak{font-size:1.7rem; direction:ltr; display:inline-block;}
+  .t-tile .t-unit{font-size:1rem; color:var(--text); margin-inline-start:6px;}
+  .t-tile small{display:block; font-size:0.82rem; color:var(--muted); margin-top:2px;}
+  .chart-card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px 14px; margin-bottom:16px;}
+  .chart-card h3{font-size:1.02rem; margin-bottom:14px;}
+  .bars{direction:ltr; display:flex; align-items:flex-end; gap:2px; height:150px; margin-top:26px; border-bottom:1px solid var(--line-2); position:relative;}
+  .bar{flex:1; position:relative; height:100%; display:flex; align-items:flex-end; cursor:default;}
+  .bar i{display:block; width:100%; background:#5B9BFF; border-radius:4px 4px 0 0; min-height:1px; transition:filter .15s;}
+  .bar.zero i{background:var(--line-2);}
+  .bar:hover i{filter:brightness(1.25);}
+  .bar .ax{position:absolute; top:100%; left:50%; transform:translateX(-50%); margin-top:5px; font-size:0.7rem; color:var(--muted); white-space:nowrap;}
+  .bar .top{position:absolute; bottom:calc(var(--h) + 4px); left:50%; transform:translateX(-50%); font-size:0.72rem; color:var(--text); font-weight:600; white-space:nowrap;}
+  .bars + .chart-note, .chart-card .chart-note{margin-top:26px;}
+  .chart-card .bars{margin-bottom:22px;}
+  .chart-note{font-size:0.8rem; color:var(--muted);}
+  .chart-table{margin:4px 0 10px; font-size:0.88rem; color:var(--muted);}
+  .chart-table summary{cursor:pointer; padding:8px 0;}
+  .chart-table table{border-collapse:collapse; margin-top:8px;}
+  .chart-table td, .chart-table th{padding:4px 12px; border-bottom:1px solid var(--line); text-align:right;}
+  .bar-tip{position:absolute; pointer-events:none; background:var(--card-2); border:1px solid var(--line-2); color:var(--text); font-size:0.82rem; padding:6px 10px; border-radius:8px; white-space:nowrap; opacity:0; transform:translate(-50%,-100%); transition:opacity .12s; z-index:5;}
+  .bar-tip.show{opacity:1;}
+  @media (max-width:700px){ .traffic-tiles{grid-template-columns:1fr;} .bar .ax{font-size:0.62rem;} }
   @media (max-width:700px){ .orders-table{display:block; overflow-x:auto; white-space:nowrap;} .stats-row{grid-template-columns:1fr;} }
   /* ---------- what's in the box ---------- */
   .inbox{background:var(--bg-2); border-block:1px solid var(--line); overflow:hidden; padding-bottom:150px;}
@@ -1123,7 +1151,7 @@
     <header class="admin-header">
       <div class="logo">FMA <span>Tech</span> · ניהול</div>
       <div style="display:flex; gap:10px; align-items:center;">
-        <button class="refresh-btn" onclick="loadOrders(); loadPendingReviews(); loadIdeas(); loadVisitCount();">רענן</button>
+        <button class="refresh-btn" onclick="loadOrders(); loadPendingReviews(); loadIdeas(); loadVisitCount(); loadVisitStats();">רענן</button>
         <a href="#" class="admin-exit" onclick="exitAdmin()">יציאה</a>
       </div>
     </header>
@@ -1132,6 +1160,26 @@
     <div class="visit-counter-card">
       <div class="visit-counter-num" id="visitCount">–</div>
       <div class="visit-counter-label">סך הכל ביקורים באתר</div>
+    </div>
+
+    <div class="traffic" id="traffic">
+      <div class="traffic-tiles">
+        <div class="t-tile"><span class="t-label">השבוע נכנסו</span><b id="tWeek">–</b><span class="t-unit">איש</span><small id="tWeekVisits"></small></div>
+        <div class="t-tile"><span class="t-label">החודש נכנסו</span><b id="tMonth">–</b><span class="t-unit">איש</span><small id="tMonthVisits"></small></div>
+        <div class="t-tile"><span class="t-label">הכי הרבה נכנסים בין</span><b id="tPeak" class="t-peak">–</b><small>לפי 30 הימים האחרונים</small></div>
+      </div>
+      <div class="chart-card">
+        <h3>אנשים שנכנסו, ב-30 הימים האחרונים</h3>
+        <div class="bars" id="chartDays" role="img" aria-label="מספר האנשים שנכנסו בכל יום ב-30 הימים האחרונים"></div>
+      </div>
+      <div class="chart-card">
+        <h3>באיזו שעה נכנסים</h3>
+        <div class="bars bars-hours" id="chartHours" role="img" aria-label="מספר הכניסות לפי שעה ביום"></div>
+        <p class="chart-note">כל הכניסות ב-30 הימים האחרונים, לפי שעון ישראל.</p>
+      </div>
+      <details class="chart-table"><summary>הצג כטבלה</summary><div id="trafficTable"></div></details>
+      <p class="chart-note" id="trafficNote"></p>
+      <div class="bar-tip" id="barTip" role="status"></div>
     </div>
 
     <div class="stats-row">
@@ -1247,6 +1295,7 @@
     loadPendingReviews();
     loadIdeas();
     loadVisitCount();
+    loadVisitStats();
   }
   async function loadVisitCount(){
     const el = document.getElementById('visitCount');
@@ -1258,6 +1307,73 @@
     }catch(err){
       console.error('שגיאה בטעינת מונה ביקורים:', err);
       el.textContent = '–';
+    }
+  }
+  const HE_DAYS = ['א׳','ב׳','ג׳','ד׳','ה׳','ו׳','ש׳'];
+  function drawBars(el, items){
+    // items: [{value, axis, tip}]
+    const max = Math.max(1, ...items.map(i => i.value));
+    const peak = items.reduce((b, i, n) => i.value > items[b].value ? n : b, 0);
+    el.innerHTML = '';
+    items.forEach((it, n) => {
+      const h = (it.value / max * 100) + '%';
+      const bar = document.createElement('div');
+      bar.className = 'bar' + (it.value ? '' : ' zero');
+      bar.style.setProperty('--h', h);
+      bar.innerHTML = '<i style="height:' + h + '"></i>' +
+        (it.axis ? '<span class="ax">' + it.axis + '</span>' : '') +
+        (n === peak && it.value ? '<span class="top">' + it.value + '</span>' : '');
+      bar.addEventListener('mouseenter', () => showTip(bar, it.tip));
+      bar.addEventListener('mouseleave', hideTip);
+      bar.addEventListener('click', () => showTip(bar, it.tip));
+      el.appendChild(bar);
+    });
+  }
+  function showTip(bar, text){
+    const tip = document.getElementById('barTip');
+    const box = document.getElementById('traffic').getBoundingClientRect();
+    const r = bar.getBoundingClientRect();
+    const col = bar.querySelector('i').getBoundingClientRect();
+    tip.textContent = text;
+    const half = tip.offsetWidth / 2 + 4;
+    tip.style.left = Math.min(Math.max(r.left + r.width / 2 - box.left, half), box.width - half) + 'px';
+    tip.style.top = (col.top - box.top - 8) + 'px';
+    tip.classList.add('show');
+  }
+  function hideTip(){ document.getElementById('barTip').classList.remove('show'); }
+  async function loadVisitStats(){
+    const note = document.getElementById('trafficNote');
+    if(!note) return;
+    try{
+      const res = await fetch(APPS_SCRIPT_URL + '?type=visitStats&key=' + ADMIN_KEY);
+      const data = await res.json();
+      if(!data || !data.days) throw new Error(data && data.error || 'no stats');
+      const n = v => Number(v || 0).toLocaleString('he-IL');
+      document.getElementById('tWeek').textContent = n(data.week.visitors);
+      document.getElementById('tWeekVisits').textContent = n(data.week.visits) + ' כניסות בסך הכל';
+      document.getElementById('tMonth').textContent = n(data.month.visitors);
+      document.getElementById('tMonthVisits').textContent = n(data.month.visits) + ' כניסות בסך הכל';
+      const hours = data.hours || [];
+      const ph = hours.reduce((b, v, i) => v > hours[b] ? i : b, 0);
+      const pad = h => String(h).padStart(2, '0') + ':00';
+      const ltr = t => '\u2066' + t + '\u2069';
+      document.getElementById('tPeak').textContent = hours[ph] ? pad(ph) + '–' + pad((ph + 1) % 24) : '–';
+      drawBars(document.getElementById('chartDays'), data.days.map((d, i) => {
+        const dt = new Date(d.d + 'T12:00:00');
+        const label = dt.getDate() + '.' + (dt.getMonth() + 1);
+        return {value:d.visitors, axis:(i % 5 === 4 || i === data.days.length - 1) ? label : '',
+                tip:'יום ' + HE_DAYS[dt.getDay()] + ' ' + ltr(label) + ': ' + d.visitors + ' איש (' + d.visits + ' כניסות)'};
+      }));
+      drawBars(document.getElementById('chartHours'), hours.map((v, h) => ({
+        value:v, axis:(h % 3 === 0) ? String(h) : '', tip:ltr(pad(h) + '–' + pad((h + 1) % 24)) + ': ' + v + ' כניסות'
+      })));
+      let rows = '<table><tr><th>תאריך</th><th>אנשים</th><th>כניסות</th></tr>';
+      data.days.slice().reverse().forEach(d => { rows += '<tr><td>' + d.d + '</td><td>' + d.visitors + '</td><td>' + d.visits + '</td></tr>'; });
+      document.getElementById('trafficTable').innerHTML = rows + '</table>';
+      note.textContent = data.since ? 'הנתונים נאספים מ-' + data.since + '. "איש" נספר פעם אחת לכל דפדפן.' : 'עדיין אין כניסות שנשמרו.';
+    }catch(err){
+      console.error('שגיאה בטעינת נתוני כניסות:', err);
+      note.textContent = 'הגרפים יופיעו אחרי שמוסיפים ל-Apps Script את הקוד מהקובץ backend/visit-stats.gs.';
     }
   }
   function showOrderOnly(){
@@ -1307,7 +1423,12 @@
   }
   routeByHash();
   if(window.location.hash !== '#admin'){
-    fetch(APPS_SCRIPT_URL + '?type=trackVisit').catch(err => console.error('שגיאה במעקב ביקור:', err));
+    let vid = '';
+    try{
+      vid = localStorage.getItem('fmaVid') || '';
+      if(!vid){ vid = Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem('fmaVid', vid); }
+    }catch(e){}
+    fetch(APPS_SCRIPT_URL + '?type=trackVisit&vid=' + encodeURIComponent(vid)).catch(err => console.error('שגיאה במעקב ביקור:', err));
   }
   window.addEventListener('hashchange', routeByHash);
 
