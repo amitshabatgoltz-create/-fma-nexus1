@@ -2,12 +2,14 @@
  * Visit statistics for the admin panel (weekly / monthly visitors, last 30
  * days, busiest hours). Add this file to the site's Apps Script project.
  *
- * Wiring, inside the existing doGet(e):
- *   1. In the branch that handles type === 'trackVisit', also call:
- *        logVisit_(e);
- *   2. Add a new branch next to the others:
- *        if (e.parameter.type === 'visitStats') return visitStats_(e);
- *   3. Deploy > Manage deployments > edit the current deployment >
+ * Wiring, inside the existing doGet(e) in Code.gs:
+ *   1. Replace   if (type === 'trackVisit') return trackVisit();
+ *      with      if (type === 'trackVisit') { try { logVisit_(e); } catch (err) {} return trackVisit(); }
+ *   2. Under it add:
+ *                if (type === 'visitStats') return visitStats_(e);
+ *   3. Pick setupVisits in the function menu at the top, press Run and allow
+ *      the permissions Google asks for (it creates the Visits sheet).
+ *   4. Deploy > Manage deployments > edit the current deployment >
  *      Version: New version > Deploy (the /exec URL stays the same).
  *
  * Visits are stored in a sheet named "Visits" (created on first use):
@@ -19,13 +21,26 @@ const VISIT_STATS_KEY_ = 'fma-nexus1-7q2k9x5w'; // same key the admin panel alre
 const VISIT_TZ_ = 'Asia/Jerusalem';
 
 function visitsSheet_() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  // Works both when the script is attached to a spreadsheet and when it is a
+  // standalone project: in the second case it keeps its own "FMA Visits" file.
+  let ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (!ss) {
+    const props = PropertiesService.getScriptProperties();
+    const id = props.getProperty('visitsSpreadsheetId');
+    ss = id ? SpreadsheetApp.openById(id) : SpreadsheetApp.create('FMA Visits');
+    if (!id) props.setProperty('visitsSpreadsheetId', ss.getId());
+  }
   let sh = ss.getSheetByName(VISITS_SHEET_);
   if (!sh) {
     sh = ss.insertSheet(VISITS_SHEET_);
     sh.appendRow(['time', 'visitor']);
   }
   return sh;
+}
+
+// Run once from the editor: creates the Visits sheet and grants permissions.
+function setupVisits() {
+  visitsSheet_();
 }
 
 function logVisit_(e) {
