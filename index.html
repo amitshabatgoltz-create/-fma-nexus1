@@ -368,6 +368,23 @@
     background:var(--green) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2309090B' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E") center/12px no-repeat;
   }
   .reserve-form{display:flex; flex-direction:column; gap:12px; margin-bottom:18px;}
+  .choice-group{border:none; margin:0; padding:0; min-width:0;}
+  .choice-row{display:grid; grid-template-columns:repeat(3, 1fr); gap:8px;}
+  .choice{position:relative; display:block; cursor:pointer;}
+  .choice input{position:absolute; opacity:0; inset:0; margin:0; cursor:pointer;}
+  .choice span{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; min-height:56px; padding:8px 6px; border:1px solid var(--line-2); border-radius:var(--radius-sm); background:var(--bg); font-weight:700; font-size:0.98rem; color:var(--text); text-align:center; transition:border-color .15s, background .15s;}
+  .choice span small{font-weight:400; font-size:0.8rem; color:var(--muted);}
+  .choice input:checked + span{border-color:var(--led); background:rgba(238,244,255,0.08); box-shadow:inset 0 0 0 1px var(--led);}
+  .choice input:focus-visible + span{outline:2px solid var(--blue); outline-offset:2px;}
+  .choice input:disabled + span{opacity:0.4; cursor:not-allowed;}
+  .size-guide{border:1px solid var(--line); border-radius:var(--radius-sm); padding:4px 14px; font-size:0.92rem; color:var(--muted);}
+  .size-guide summary{cursor:pointer; color:var(--text); font-weight:600; min-height:44px; display:flex; align-items:center;}
+  .size-guide ol{padding-inline-start:20px; display:grid; gap:4px; margin:4px 0 10px;}
+  .size-guide table{width:100%; border-collapse:collapse; margin-bottom:10px;}
+  .size-guide th, .size-guide td{border-bottom:1px solid var(--line); padding:6px 4px; text-align:right;}
+  .size-guide th{color:var(--text);}
+  .size-guide p{margin-bottom:10px;}
+  .orders-closed-note{background:var(--card-2); border:1px solid var(--line); border-radius:var(--radius-sm); padding:18px 20px; color:var(--muted); font-size:0.92rem; text-align:center;}
   .stock-note{font-size:0.92rem; font-weight:600; margin-bottom:18px; min-height:1.2em;}
   .stock-note.low{color:var(--red);}
   .stock-note.ok{color:var(--green);}
@@ -513,6 +530,7 @@
   .toolbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; gap:12px; flex-wrap:wrap;}
   .refresh-btn{background:var(--led); color:var(--bg); border:none; min-height:44px; padding:10px 20px; border-radius:999px; font-family:'Heebo',sans-serif; font-weight:700; font-size:0.9rem; cursor:pointer;}
   .last-updated{font-size:0.84rem; color:var(--muted);}
+  .orders-scroll{overflow-x:auto; margin-bottom:32px;}
   .orders-table{width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;}
   .orders-table th{text-align:right; font-size:0.8rem; color:var(--muted); font-weight:600; padding:14px 16px; border-bottom:1px solid var(--line); background:rgba(255,255,255,0.03);}
   .orders-table td{padding:14px 16px; border-bottom:1px solid var(--line); font-size:0.92rem; vertical-align:middle;}
@@ -758,14 +776,14 @@
 <main id="main" tabindex="-1">
 <section class="hero">
   <div class="wrap hero-inner">
-    <div class="drop-pill"><span class="dot" aria-hidden="true"></span>Drop 01 · 5 יחידות בלבד · שריון בחינם</div>
+    <div class="drop-pill"><span class="dot" aria-hidden="true"></span>Drop 02 · 10 כפפות בלבד · שריון בחינם</div>
     <h1>היד שלך עבדה קשה.<br><span class="glow">עכשיו תנו לה לנוח.</span></h1>
     <p class="lead">FMA Nexus-1: כפפת עיסוי, חימום ותאורה לנגנים וגיימרים. שלושה כפתורים, שלוש תוכניות, ויד רגועה תוך דקות.</p>
     <div class="hero-actions">
-      <a href="#order" target="_blank" rel="noopener noreferrer" class="btn-primary"><span>להזמנה מוקדמת · ₪<span class="live-price">179</span></span></a>
+      <a href="#order" target="_blank" rel="noopener noreferrer" class="btn-primary"><span>להזמנה מוקדמת · ₪<span class="live-price">219</span></span></a>
       <a href="#how" class="btn-ghost">לראות את התוכניות</a>
     </div>
-    <p class="price-note">מחיר השקה ל-Drop 01 בלבד · ב-Drop 02: ₪219</p>
+    <p class="price-note">₪219 לכפפה · ₪379 לזוג · Drop 01 נמכר במלואו</p>
     <div class="hero-stage">
       <div class="hero-visual">
       <img class="product-photo-main" src="assets/glove.webp" width="1000" height="914" fetchpriority="high" alt="FMA Nexus-1 — כפפת העיסוי הטרמית">
@@ -839,7 +857,7 @@
       </div>
     </div>
     <div class="steps">
-      <div class="step"><div class="step-num">1</div><div><h3>לובשים</h3><p>כפפה סרוגה ונוחה, עם מארז בקרה קטן על גב היד ורצועה מתכווננת.</p></div></div>
+      <div class="step"><div class="step-num">1</div><div><h3>לובשים</h3><p>כפפה סרוגה ונוחה וקלה. יחידת הבקרה יושבת לידכם, ומחוברת לכפפה בכבל דק.</p></div></div>
       <div class="step"><div class="step-num">2</div><div><h3>לוחצים</h3><p>כל כפתור מפעיל תוכנית אחרת. לחיצה נוספת על אותו כפתור עוצרת.</p></div></div>
       <div class="step"><div class="step-num">3</div><div><h3>נחים</h3><p>סגנונות הרטט מתחלפים כל כמה שניות, והתוכנית נגמרת לבד.</p></div></div>
     </div>
@@ -869,7 +887,7 @@
       <div class="tile tile-led">
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></div>
         <h3>תאורת לד</h3>
-        <p>פסי לד לבנים לאורך האצבעות, שנדלקים יחד עם התוכנית.</p>
+        <p>תאורת לד לבנה על הכפפה, שנדלקת יחד עם התוכנית.</p>
       </div>
       <div class="tile">
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 7h1a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2"/><path d="M6 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h1"/><path d="m11 7-3 5h4l-3 5"/><line x1="22" x2="22" y1="11" y2="13"/></svg></div>
@@ -879,7 +897,7 @@
       <div class="tile">
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="2.5"/><circle cx="12" cy="12" r="2.5"/><circle cx="19" cy="12" r="2.5"/></svg></div>
         <h3>בלי אפליקציה</h3>
-        <p>שלושה כפתורים על המארז. בלי הגדרות ובלי טלפון.</p>
+        <p>שלושה כפתורים על יחידת הבקרה. בלי הגדרות ובלי טלפון.</p>
       </div>
       <div class="tile tile-wide">
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
@@ -970,8 +988,8 @@
 <section class="drop-band">
   <div class="wrap">
     <div class="drop-band-inner">
-      <span class="eyebrow">Drop 01</span>
-      <h2>רק 5 כפפות בסבב הראשון.</h2>
+      <span class="eyebrow">Drop 02</span>
+      <h2>רק 10 כפפות בסבב השני.</h2>
       <p>שריון בחינם, התשלום רק באישור הסופי בוואטסאפ.</p>
       <a href="#order" target="_blank" rel="noopener noreferrer" class="btn-primary">שריינו יחידה</a>
     </div>
@@ -1023,13 +1041,13 @@
   <div class="wrap">
     <div class="buy-card">
       <div class="buy-top">
-        <h3>FMA Tech — יחידה ראשונה</h3>
-        <div class="buy-price">₪<span class="live-price">179</span><small>/יחידה </small></div>
+        <h3>FMA Nexus-1 · Drop 02</h3>
+        <div class="buy-price">₪<span class="live-price" id="buyPrice">219</span><small id="buyPriceUnit">/כפפה</small></div>
       </div>
-      <p class="buy-desc">מחיר השקה ל-Drop 01 — מהדורה מוגבלת של 5 יחידות בלבד.</p>
+      <p class="buy-desc">10 כפפות בלבד: ₪219 לכפפה, או ₪379 לזוג. Drop 02 נבנה אחרי ש-Drop 01 יישלח ללקוחות.</p>
       <p class="stock-note" id="stockNote"></p>
       <ul class="buy-list">
-        <li>כפפת FMA Nexus-1 עם מארז בקרה ורצועה מתכווננת</li>
+        <li>כפפת FMA Nexus-1, מחוברת ליחידת בקרה עם 3 כפתורים</li>
         <li>כבל טעינה Type-C</li>
         <li>מדריך שימוש קצר</li>
         <li>כרית לשורש כף היד</li>
@@ -1037,6 +1055,39 @@
       </ul>
       <div id="reserveFormWrap">
         <div class="reserve-form">
+          <fieldset class="choice-group">
+            <legend class="field-label">איזו כפפה?</legend>
+            <div class="choice-row">
+              <label class="choice"><input type="radio" name="glvSide" value="left" checked><span>יד שמאל<small>₪219</small></span></label>
+              <label class="choice"><input type="radio" name="glvSide" value="right"><span>יד ימין<small>₪219</small></span></label>
+              <label class="choice"><input type="radio" name="glvSide" value="pair"><span>זוג<small>₪379</small></span></label>
+            </div>
+          </fieldset>
+          <fieldset class="choice-group">
+            <legend class="field-label">מידה</legend>
+            <div class="choice-row">
+              <label class="choice"><input type="radio" name="glvSize" value="S"><span>S<small>קטנה</small></span></label>
+              <label class="choice"><input type="radio" name="glvSize" value="M" checked><span>M<small>בינונית</small></span></label>
+              <label class="choice"><input type="radio" name="glvSize" value="L"><span>L<small>גדולה</small></span></label>
+            </div>
+          </fieldset>
+          <details class="size-guide">
+            <summary>איך יודעים איזו מידה?</summary>
+            <ol>
+              <li>לוקחים סרט מדידה רך, או חוט שאחר כך מודדים בסרגל.</li>
+              <li>מקיפים את כף היד הדומיננטית ממש מתחת לפרקי האצבעות, בלי האגודל. היד פתוחה, והאצבעות צמודות.</li>
+              <li>משווים לטבלה. אם יצא בדיוק בין שתי מידות, לוקחים את הגדולה.</li>
+            </ol>
+            <table>
+              <thead><tr><th>מידה</th><th>היקף כף היד</th></tr></thead>
+              <tbody>
+                <tr><td>S</td><td>עד 19 ס"מ</td></tr>
+                <tr><td>M</td><td>19 עד 21 ס"מ</td></tr>
+                <tr><td>L</td><td>21 עד 23 ס"מ</td></tr>
+              </tbody>
+            </table>
+            <p>הכפפה סרוגה ונמתחת, אז היא נוחה גם קצת מעל או מתחת לטווח. בזוג, שתי הכפפות באותה מידה.</p>
+          </details>
           <label class="field-label" for="reserveName">שם מלא</label>
           <input type="text" id="reserveName" class="reserve-input" autocomplete="name">
           <label class="field-label" for="reservePhone">טלפון נייד</label>
@@ -1047,11 +1098,14 @@
           <div class="hp" aria-hidden="true"><label for="reserveHp">אל תמלאו את השדה הזה</label><input type="text" id="reserveHp" tabindex="-1" autocomplete="off"></div>
         </div>
         <p class="form-error" id="reserveError" role="alert"></p>
-        <button class="buy-cta" id="reserveBtn" onclick="reserveUnit()">שריינו לי יחידה</button>
+        <button class="buy-cta" id="reserveBtn" onclick="reserveUnit()">שריינו לי כפפה</button>
         <p class="buy-note">שיטת שריון מקום: לאחר מילוי הפרטים ניצור איתך קשר בוואטסאפ לאישור סופי ולשליחת בקשת תשלום מאובטחת ב-Bit. אין חיוב אוטומטי בשלב הזה.</p>
       </div>
       <div class="sold-out-note" id="soldOutNote" style="display:none;">
-        כל 5 היחידות של Drop 01 שוריינו במלואן. עקבו אחרינו לעדכון על Drop 02.
+        כל 10 הכפפות של Drop 02 שוריינו. עקבו אחרינו בטיקטוק לעדכון על Drop 03.
+      </div>
+      <div class="orders-closed-note" id="ordersClosedNote" style="display:none;">
+        השריון ל-Drop 02 נפתח בקרוב. עקבו אחרינו בטיקטוק, ונודיע ברגע שאפשר לשריין.
       </div>
       <div class="toast" id="cartToast" role="status"></div>
       <a href="https://mail.google.com/mail/?view=cm&fs=1&to=amitshabatgoltz@gmail.com&su=רוצה%20לבנות%20אתר" target="_blank" rel="noopener noreferrer" class="buy-card-promo">רוצים לבנות אתר כמו הזה? כתבו לי: amitshabatgoltz@gmail.com</a>
@@ -1092,7 +1146,7 @@
           מתי ה-Drop הבא?
           <span class="plus">+</span>
         </button>
-        <div class="faq-a">DROP 01 מוגבל ל-5 יחידות בלבד. DROP 02 ייפתח אחרי ש-DROP 01 יישלח ללקוחות. עקבו אחרינו בטיקטוק לעדכונים.</div>
+        <div class="faq-a">Drop 01 נמכר במלואו. עכשיו פתוח השריון ל-Drop 02, 10 כפפות בלבד, והבנייה שלו מתחילה אחרי ש-Drop 01 יישלח ללקוחות. עקבו אחרינו בטיקטוק לעדכונים.</div>
       </div>
       <div class="faq-item">
         <button class="faq-q" onclick="toggleFaq(this)">
@@ -1190,6 +1244,7 @@
           <a href="#faq">שאלות נפוצות</a>
           <a href="#policy">תקנון ומדיניות</a>
           <a href="mailto:fmafingersmassage@gmail.com">צור קשר</a>
+          <a href="guide.html">מדריך שימוש</a>
           <a href="privacy.html">מדיניות פרטיות</a>
           <a href="accessibility.html">הצהרת נגישות</a>
         </div>
@@ -1205,7 +1260,7 @@
 </footer>
 
 <aside class="mobile-cta" id="mobileCta" aria-label="שריון מהיר">
-  <span>Drop 01 · <b>₪<span class="live-price">179</span></b></span>
+  <span>Drop 02 · <b>₪<span class="live-price">219</span></b></span>
   <a href="#order" target="_blank" rel="noopener noreferrer" class="btn-primary">שריינו יחידה</a>
 </aside>
 
@@ -1238,7 +1293,7 @@
         <a href="#" class="admin-exit" onclick="exitAdmin()">יציאה</a>
       </div>
     </header>
-    <p class="admin-subtitle">כל ההזמנות שמגיעות מטופס "שריינו לי יחידה" באתר.</p>
+    <p class="admin-subtitle">כל ההזמנות שמגיעות מטופס השריון באתר.</p>
 
     <div class="visit-counter-card">
       <div class="visit-counter-num" id="visitCount">–</div>
@@ -1265,6 +1320,15 @@
       <div class="bar-tip" id="barTip" role="status"></div>
     </div>
 
+    <div class="admin-section-head">
+      <h2>הזמנות Drop 02</h2>
+    </div>
+    <p class="admin-subtitle" id="drop02Summary"></p>
+    <div id="drop02Orders"><div class="loading-state">טוען הזמנות…</div></div>
+
+    <div class="admin-section-head">
+      <h2>הזמנות Drop 01</h2>
+    </div>
     <div class="stats-row">
       <div class="stat-card">
         <div class="num" id="statTotal">–</div>
@@ -1697,7 +1761,71 @@
     }
   }
 
+  async function updateStatus2(row, newStatus){
+    try{
+      await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'updateStatus2', row, status: newStatus, key: ADMIN_KEY })
+      });
+      loadOrders2();
+    }catch(err){
+      console.error('שגיאה בעדכון הסטטוס:', err);
+      alert('לא הצלחנו לשמור את השינוי, נסו שוב.');
+    }
+  }
+
+  async function loadOrders2(){
+    const el = document.getElementById('drop02Orders');
+    const sum = document.getElementById('drop02Summary');
+    if(!el || !sum) return;
+    el.innerHTML = '<div class="loading-state">טוען הזמנות…</div>';
+    sum.textContent = '';
+    try{
+      const res = await fetch(APPS_SCRIPT_URL + '?type=orders2&key=' + encodeURIComponent(ADMIN_KEY));
+      const orders = await res.json();
+      if(!Array.isArray(orders)){
+        el.innerHTML = '<div class="error-state">השרת עוד לא מחובר ל-Drop 02. צריך להוסיף את drop02.gs ל-Apps Script ולעשות Deploy.</div>';
+        return;
+      }
+      const active = orders.filter(o => o.status !== 'בוטל');
+      const gloves = active.reduce((n, o) => n + (Number(o.gloves) || 0), 0);
+      const bySize = {S:0, M:0, L:0};
+      active.forEach(o => { if(bySize[o.size] !== undefined) bySize[o.size] += Number(o.gloves) || 0; });
+      sum.textContent = 'שוריינו ' + gloves + ' כפפות מתוך 10 · S: ' + bySize.S + ' · M: ' + bySize.M + ' · L: ' + bySize.L;
+      if(orders.length === 0){
+        el.innerHTML = '<div class="empty-state">עדיין אין הזמנות ל-Drop 02.</div>';
+        return;
+      }
+      orders.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+      let html = '<table class="orders-table"><thead><tr>' +
+        '<th>שם</th><th>טלפון</th><th>כפפה</th><th>מידה</th><th>מחיר</th><th>קוד סוכן</th><th>תאריך</th><th>סטטוס</th><th></th>' +
+        '</tr></thead><tbody>';
+      for(const o of orders){
+        html += '<tr>' +
+          '<td>' + esc(o.name || '—') + '</td>' +
+          '<td class="order-phone">' + esc(o.phone || '—') + '</td>' +
+          '<td>' + esc(o.side || '—') + '</td>' +
+          '<td>' + esc(o.size || '—') + '</td>' +
+          '<td>₪' + esc(o.price || '—') + '</td>' +
+          '<td>' + esc(o.agentCode ? o.agentCode : 'ללא סוכן') + '</td>' +
+          '<td>' + esc(formatDate(o.timestamp)) + '</td>' +
+          '<td><select class="status-select" aria-label="סטטוס ההזמנה של ' + esc(o.name || '') + '" onchange="updateStatus2(' + Number(o.row) + ', this.value)">' +
+            STATUS_OPTIONS.map(s => '<option value="' + s + '"' + (o.status === s ? ' selected' : '') + '>' + s + '</option>').join('') +
+          '</select></td>' +
+          '<td><a class="wa-link" target="_blank" rel="noopener noreferrer" href="' + esc(waLink(o.phone)) + '">וואטסאפ</a></td>' +
+        '</tr>';
+      }
+      html += '</tbody></table>';
+      el.innerHTML = '<div class="orders-scroll">' + html + '</div>';
+    }catch(err){
+      console.error('שגיאה בטעינת הזמנות Drop 02:', err);
+      el.innerHTML = '<div class="error-state">משהו השתבש בטעינת ההזמנות של Drop 02. נסו ללחוץ על "רענן".</div>';
+    }
+  }
+
   async function loadOrders(){
+    loadOrders2();
     const content = document.getElementById('adminContent');
     content.innerHTML = '<div class="loading-state">טוען הזמנות…</div>';
     try{
@@ -1942,27 +2070,62 @@
     }
   }
 
+  const DROP_PRICE = { left: 219, right: 219, pair: 379 };
+  const SIDE_NAME = { left: 'יד שמאל', right: 'יד ימין', pair: 'זוג' };
+  let dropRemaining = null;   // gloves left in Drop 02, or null when unknown
+
+  // Drop 02 stock in gloves. null = the server could not be reached;
+  // 'closed' = the server does not take Drop 02 orders yet.
   async function getRemainingUnits(){
     try{
-      const res = await fetch(APPS_SCRIPT_URL + '?type=stock');
+      const res = await fetch(APPS_SCRIPT_URL + '?type=stock2');
       const data = await res.json();
-      return (typeof data.remaining === 'number') ? data.remaining : null;
+      if(!data || data.drop !== '02' || typeof data.remaining !== 'number') return 'closed';
+      return data.remaining;
     }catch(err){
       console.error('שגיאה בבדיקת מלאי:', err);
       return null; // unknown — don't block the form on a network hiccup
     }
   }
 
+  function selectedSide(){ const el = document.querySelector('input[name="glvSide"]:checked'); return el ? el.value : 'left'; }
+  function selectedSize(){ const el = document.querySelector('input[name="glvSize"]:checked'); return el ? el.value : ''; }
+
+  function updatePriceShown(){
+    const side = selectedSide();
+    const price = document.getElementById('buyPrice');
+    const unit = document.getElementById('buyPriceUnit');
+    if(price) price.textContent = String(DROP_PRICE[side]);
+    if(unit) unit.textContent = side === 'pair' ? '/זוג' : '/כפפה';
+  }
+
   async function checkStock(){
     const note = document.getElementById('stockNote');
     const formWrap = document.getElementById('reserveFormWrap');
     const soldOut = document.getElementById('soldOutNote');
-    if(!note || !formWrap || !soldOut) return;
+    const closed = document.getElementById('ordersClosedNote');
+    if(!note || !formWrap || !soldOut || !closed) return;
 
     const remaining = await getRemainingUnits();
+    dropRemaining = (typeof remaining === 'number') ? remaining : null;
+    closed.style.display = remaining === 'closed' ? 'block' : 'none';
+    if(remaining === 'closed'){
+      note.textContent = '';
+      formWrap.style.display = 'none';
+      soldOut.style.display = 'none';
+      return;
+    }
     if(remaining === null){
       note.textContent = '';
       return;
+    }
+    const pairInput = document.querySelector('input[name="glvSide"][value="pair"]');
+    if(pairInput){
+      pairInput.disabled = remaining < 2;
+      if(pairInput.disabled && pairInput.checked){
+        document.querySelector('input[name="glvSide"][value="left"]').checked = true;
+        updatePriceShown();
+      }
     }
     if(remaining <= 0){
       note.textContent = '';
@@ -1972,22 +2135,34 @@
       formWrap.style.display = 'block';
       soldOut.style.display = 'none';
       if(remaining === 1){
-        note.textContent = 'נשארה יחידה אחת בלבד!';
+        note.textContent = 'נשארה כפפה אחת בלבד!';
+        note.className = 'stock-note low';
+      } else if(remaining <= 4){
+        note.textContent = 'נשארו ' + remaining + ' כפפות מתוך 10.';
         note.className = 'stock-note low';
       } else {
-        note.textContent = '';
-        note.className = 'stock-note';
+        note.textContent = 'נשארו ' + remaining + ' כפפות מתוך 10.';
+        note.className = 'stock-note ok';
       }
     }
   }
+
+  document.querySelectorAll('input[name="glvSide"]').forEach(el => el.addEventListener('change', updatePriceShown));
 
   async function reserveUnit(){
     const name = document.getElementById('reserveName').value.trim();
     const phone = document.getElementById('reservePhone').value.trim();
     const agentCode = document.getElementById('reserveAgentCode').value.trim();
+    const side = selectedSide();
+    const size = selectedSize();
+    const gloves = side === 'pair' ? 2 : 1;
     formMsg('cartToast', ''); formMsg('reserveError', '');
+    if(!size){
+      formMsg('reserveError', 'נא לבחור מידה: S, M או L.');
+      return;
+    }
     if(!name || !phone){
-      formMsg('reserveError', 'נא למלא שם וטלפון כדי לשריין יחידה.');
+      formMsg('reserveError', 'נא למלא שם וטלפון כדי לשריין.');
       document.getElementById(!name ? 'reserveName' : 'reservePhone').focus();
       return;
     }
@@ -2002,24 +2177,26 @@
     btn.disabled = true;
     btn.textContent = 'בודק מלאי...';
     const remaining = await getRemainingUnits();
-    if(remaining !== null && remaining <= 0){
+    if(remaining === 'closed' || (typeof remaining === 'number' && remaining < gloves)){
       checkStock();
       btn.disabled = false;
-      btn.textContent = 'שריינו לי יחידה';
+      btn.textContent = 'שריינו לי כפפה';
       sentFailed('reserve');
-      formMsg('reserveError', 'מצטערים, כל היחידות בדרופ הזה שוריינו בדיוק עכשיו.');
+      formMsg('reserveError', remaining === 'closed'
+        ? 'השריון ל-Drop 02 עוד לא נפתח. נסו שוב בקרוב.'
+        : (remaining === 1 ? 'נשארה רק כפפה אחת, אז אי אפשר לשריין זוג. אפשר לבחור יד שמאל או ימין.' : 'מצטערים, כל הכפפות בדרופ הזה שוריינו בדיוק עכשיו.'));
       return;
     }
     btn.textContent = 'שומר...';
-    const ok = await postForm({ name, phone, agentCode });
+    const ok = await postForm({ action: 'order2', name, phone, agentCode, side, size });
     btn.disabled = false;
-    btn.textContent = 'שריינו לי יחידה';
+    btn.textContent = 'שריינו לי כפפה';
     if(ok){
       document.getElementById('reserveName').value = '';
       document.getElementById('reservePhone').value = '';
       document.getElementById('reserveAgentCode').value = '';
       checkStock();
-      formMsg('cartToast', 'הפרטים נשמרו. ניצור איתך קשר בוואטסאפ בקרוב.');
+      formMsg('cartToast', 'שריינו לך: ' + SIDE_NAME[side] + ', מידה ' + size + ', ₪' + DROP_PRICE[side] + '. ניצור איתך קשר בוואטסאפ בקרוב.');
     } else {
       sentFailed('reserve');
       formMsg('reserveError', 'השריון לא נשמר. בדקו את החיבור ונסו שוב, או כתבו לנו ל-fmafingersmassage@gmail.com.');
@@ -2102,10 +2279,10 @@
   (function(){
     const ITEMS = {
       guide:   {n:1, name:'מדריך שימוש קצר', desc:'דף אחד עם כל מה שצריך: מה עושה כל כפתור, איך מטעינים ואיך שומרים על הכפפה.', list:['ברקוד שמוביל למדריך המלא','הוראות בטיחות לשימוש בחימום']},
-      glove:   {n:2, name:'כפפת FMA Nexus-1', desc:'כפפה סרוגה שחורה, עם מארז בקרה קטן על גב היד שכבר מחובר אליה.', list:['5 מנועי רטט, אחד לכל אצבע','17 סגנונות רטט שמתחלפים באקראיות','3 כפתורים: תוכניות של 2, 4 ו-6 דקות','פסי לד לבנים וחימום מבוקר עם חיישן','רצועה מתכווננת לשורש כף היד']},
-      cable:   {n:3, name:'כבל טעינה Type-C', desc:'כבל לטעינת הכפפה ממטען USB, כמו של טלפון.', list:['הכפפה נטענת דרך שקע Type-C במארז','סוללה מלאה מספיקה לכמה תוכניות']},
+      glove:   {n:2, name:'כפפת FMA Nexus-1', desc:'כפפה סרוגה שחורה וקלה, מחוברת בכבל דק ליחידת בקרה שיושבת לידכם.', list:['5 מנועי רטט, אחד לכל אצבע','17 סגנונות רטט שמתחלפים באקראיות','3 כפתורים: תוכניות של 2, 4 ו-6 דקות','תאורת לד לבנה וחימום מבוקר עם חיישן','יחידת בקרה עם 3 כפתורים ומתג הפעלה']},
+      cable:   {n:3, name:'כבל טעינה Type-C', desc:'כבל לטעינת הכפפה ממטען USB, כמו של טלפון.', list:['הכפפה נטענת דרך שקע Type-C ביחידת הבקרה','סוללה מלאה מספיקה לכמה תוכניות']},
       cushion: {n:4, name:'כרית לשורש כף היד', desc:'כרית רכה שמניחים עליה את היד בזמן שהתוכנית עובדת.', list:[]},
-      box:     {n:5, name:'הקופסה של Drop 01', desc:'ב-Drop 01 הכפפה מגיעה בקופסה שחורה מיוחדת, רק ל-5 הכפפות של הסבב הראשון.', list:['כל כפפה נבדקת ידנית לפני שהיא נארזת']}
+      box:     {n:5, name:'האריזה', desc:'הכפפה ויחידת הבקרה מגיעות עטופות בניילון בועות, בתוך קרטון משלוח.', list:['כל כפפה נבדקת ידנית לפני שהיא נארזת']}
     };
     const svg = document.getElementById('boxStack');
     if(!svg) return;
