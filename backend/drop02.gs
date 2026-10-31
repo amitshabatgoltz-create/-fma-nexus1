@@ -116,6 +116,9 @@ function drop02Post_(e) {
   try {
     if (DROP02_TOTAL_ - drop02Taken_() < gloves) return drop02Out_({ error: 'sold out' });
     drop02Sheet_().appendRow([new Date(), name, phone, agentCode, side, size, gloves, price, DROP02_STATUSES_[0]]);
+    MailApp.sendEmail('fmafingersmassage@gmail.com', 'הזמנה חדשה ל-Drop 02',
+      'שם: ' + name + '\nטלפון: ' + phone + '\nכפפה: ' + side + ', מידה ' + size + '\nמחיר: ₪' + price +
+      (agentCode ? '\nקוד סוכן: ' + agentCode : ''));
   } finally {
     lock.releaseLock();
   }
