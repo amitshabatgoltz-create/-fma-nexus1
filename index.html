@@ -23,7 +23,7 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preload" as="image" href="assets/glove.webp" type="image/webp">
+<link rel="preload" as="image" href="assets/render-fingers.webp" type="image/webp">
 <style>
   :root{
     --bg:#09090B;
@@ -871,6 +871,35 @@
   .eyebrow{font-size:0.82rem; text-transform:none;}
   .eyebrow::before{font-family:var(--mono);}
   .hero-specs dt, .row-tag, .spec-sheet dt{font-size:0.8rem;}
+
+  /* look vote in the hero */
+  .vote{width:100%;}
+  .vote-q{color:var(--muted); font-size:1rem; margin-bottom:14px;}
+  .vote-q b{color:var(--text); font-weight:600;}
+  .vote-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .vote-opt{margin:0; display:flex; flex-direction:column; gap:10px; min-width:0;}
+  .vote-img{position:relative; border-radius:14px; overflow:hidden; border:1px solid var(--line-2); background:var(--card);}
+  .vote-img img, .vote-img .product-photo-main{width:100%; height:auto; display:block; border:none; border-radius:0; box-shadow:none;}
+  .vote-img .sim-label{top:10px; left:10px;}
+  .vote-num{position:absolute; top:8px; right:10px; font-family:var(--display); font-size:2.2rem; line-height:1; color:var(--text); text-shadow:0 2px 12px rgba(0,0,0,0.8);}
+  .vote-opt figcaption{font-weight:700; font-size:1.02rem;}
+  .vote-btn{min-height:46px; border-radius:999px; border:1px solid var(--line-2); background:transparent; color:var(--text); font-weight:700; font-size:0.98rem; cursor:pointer; transition:border-color .2s var(--ease), background .2s var(--ease);}
+  .vote-btn:hover{border-color:var(--led); background:rgba(238,244,255,0.06);}
+  .vote-btn:disabled{opacity:0.5; cursor:wait;}
+  .vote-result p{font-size:0.9rem; color:var(--muted); margin-top:6px;}
+  .vote-bar{height:8px; border-radius:999px; background:var(--card-2); overflow:hidden;}
+  .vote-bar span{display:block; height:100%; width:0; background:var(--muted); border-radius:999px; transition:width .6s var(--ease);}
+  .vote-opt.mine .vote-img{border-color:var(--led); box-shadow:0 0 0 1px var(--led), 0 0 30px rgba(238,244,255,0.18);}
+  .vote-opt.mine .vote-bar span{background:var(--led);}
+  .vote-opt.mine .vote-result p{color:var(--text);}
+  .vote-status{font-size:0.9rem; color:var(--muted); margin-top:14px; min-height:1.4em;}
+  .hero-demos{display:flex; align-items:center; gap:16px; margin-top:22px; padding-top:18px; border-top:1px solid var(--line);}
+  .hero-demos-label{font-size:0.85rem; font-weight:600; color:var(--muted);}
+  .hero-demos .video-accent, .hero-demos .video-accent-2{position:relative; inset:auto; width:84px; flex:0 0 84px; top:auto; left:auto; right:auto; bottom:auto;}
+  .hero-demos .sound-toggle{width:28px; height:28px; bottom:6%;}
+  .hero-demos .sound-toggle svg{width:13px; height:13px;}
+  @media (max-width:420px){ .vote-grid{gap:10px;} .vote-num{font-size:1.8rem;} .vote-opt figcaption{font-size:0.95rem;} }
+  .vote-stats{grid-template-columns:repeat(2,1fr);}
 </style>
 </head>
 <body>
@@ -923,20 +952,43 @@
       </dl>
     </div>
     <div class="hero-stage">
-      <div class="hero-visual">
-      <img class="product-photo-main" src="assets/glove.webp" width="1000" height="914" fetchpriority="high" alt="FMA Nexus-1 — כפפת העיסוי הטרמית">
-      <div class="video-accent">
-      <button type="button" class="video-open" onclick="openVideo('heroVideo', this)" aria-label="הצגת סרטון ההדגמה במסך מלא"></button>
-      <video id="heroVideo" class="device-plate" autoplay muted loop playsinline aria-label="FMA Nexus-1 — הדגמת מוצר"><source src="assets/demo-1.mp4" type="video/mp4"></video>
-      <button type="button" class="sound-toggle" id="soundToggle" onclick="event.stopPropagation(); toggleSound()" aria-label="הפעל קול"><svg id="soundIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/><line x1="16" y1="9" x2="22" y2="15" stroke="currentColor" stroke-width="2"/><line x1="22" y1="9" x2="16" y2="15" stroke="currentColor" stroke-width="2"/></svg></button>
+      <div class="vote" id="lookVote">
+        <p class="vote-q">איך הכפפה תיראה? <b>בחרו את העיצוב שאתם אוהבים.</b></p>
+        <div class="vote-grid">
+          <figure class="vote-opt" data-opt="fingers">
+            <div class="vote-img">
+              <img class="product-photo-main" src="assets/render-fingers.webp" width="1000" height="914" fetchpriority="high" alt="הדמיה: כפפה שחורה עם פסי לד לבנים לאורך האצבעות, ויחידת בקרה עם שלושה כפתורים ליד היד">
+              <span class="sim-label">הדמיה</span><span class="vote-num">1</span>
+            </div>
+            <figcaption>אצבעות מאירות</figcaption>
+            <button type="button" class="vote-btn" data-opt="fingers">הצבעה ל-1</button>
+            <div class="vote-result" hidden><div class="vote-bar"><span></span></div><p></p></div>
+          </figure>
+          <figure class="vote-opt" data-opt="logo">
+            <div class="vote-img">
+              <img src="assets/render-logo.webp" width="1000" height="914" loading="lazy" alt="הדמיה: כפפה שחורה עם לוגו FMA זוהר על גב היד, ויחידת בקרה עם שלושה כפתורים על השולחן">
+              <span class="sim-label">הדמיה</span><span class="vote-num">2</span>
+            </div>
+            <figcaption>לוגו זוהר</figcaption>
+            <button type="button" class="vote-btn" data-opt="logo">הצבעה ל-2</button>
+            <div class="vote-result" hidden><div class="vote-bar"><span></span></div><p></p></div>
+          </figure>
+        </div>
+        <p class="vote-status" id="voteStatus" role="status">התוצאות מופיעות אחרי שמצביעים.</p>
+        <div class="hero-demos">
+          <span class="hero-demos-label">סרטוני הדגמה</span>
+          <div class="video-accent">
+          <button type="button" class="video-open" onclick="openVideo('heroVideo', this)" aria-label="הצגת סרטון ההדגמה במסך מלא"></button>
+          <video id="heroVideo" class="device-plate" autoplay muted loop playsinline aria-label="FMA Nexus-1 — הדגמת מוצר"><source src="assets/demo-1.mp4" type="video/mp4"></video>
+          <button type="button" class="sound-toggle" id="soundToggle" onclick="event.stopPropagation(); toggleSound()" aria-label="הפעל קול"><svg id="soundIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/><line x1="16" y1="9" x2="22" y2="15" stroke="currentColor" stroke-width="2"/><line x1="22" y1="9" x2="16" y2="15" stroke="currentColor" stroke-width="2"/></svg></button>
+          </div>
+          <div class="video-accent-2">
+          <button type="button" class="video-open" onclick="openVideo('heroVideo3', this)" aria-label="הצגת סרטון ההדגמה השני במסך מלא"></button>
+          <video id="heroVideo3" class="device-plate" autoplay muted loop playsinline aria-label="FMA Nexus-1 — הדגמה נוספת"><source src="assets/demo-2.mp4" type="video/mp4"></video>
+          <button type="button" class="sound-toggle" id="soundToggle3" onclick="event.stopPropagation(); toggleSound3()" aria-label="הפעל קול"><svg id="soundIcon3" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/><line x1="16" y1="9" x2="22" y2="15" stroke="currentColor" stroke-width="2"/><line x1="22" y1="9" x2="16" y2="15" stroke="currentColor" stroke-width="2"/></svg></button>
+          </div>
+        </div>
       </div>
-      <div class="video-accent-2">
-      <button type="button" class="video-open" onclick="openVideo('heroVideo3', this)" aria-label="הצגת סרטון ההדגמה השני במסך מלא"></button>
-      <video id="heroVideo3" class="device-plate" autoplay muted loop playsinline aria-label="FMA Nexus-1 — הדגמה נוספת"><source src="assets/demo-2.mp4" type="video/mp4"></video>
-      <button type="button" class="sound-toggle" id="soundToggle3" onclick="event.stopPropagation(); toggleSound3()" aria-label="הפעל קול"><svg id="soundIcon3" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/><line x1="16" y1="9" x2="22" y2="15" stroke="currentColor" stroke-width="2"/><line x1="22" y1="9" x2="16" y2="15" stroke="currentColor" stroke-width="2"/></svg></button>
-      </div>
-      <div class="badge"><span class="dots" aria-hidden="true"><i style="background:var(--green)"></i><i style="background:var(--blue)"></i><i style="background:var(--red)"></i></span>3 תוכניות · 2–6 דקות</div><div class="sim-label">הדמיה</div>
-    </div>
     </div>
   </div>
 </section>
@@ -1412,6 +1464,20 @@
       </div>
     </header>
     <p class="admin-subtitle">כל ההזמנות שמגיעות מטופס השריון באתר.</p>
+
+    <div class="admin-section-head">
+      <h2>הצבעה על העיצוב</h2>
+    </div>
+    <div class="stats-row vote-stats">
+      <div class="stat-card">
+        <div class="num" id="voteFingers">–</div>
+        <div class="label">אצבעות מאירות (1)</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" id="voteLogo">–</div>
+        <div class="label">לוגו זוהר (2)</div>
+      </div>
+    </div>
 
     <div class="visit-counter-card">
       <div class="visit-counter-num" id="visitCount">–</div>
@@ -1944,6 +2010,7 @@
 
   async function loadOrders(){
     loadOrders2();
+    loadVoteStats();
     const content = document.getElementById('adminContent');
     content.innerHTML = '<div class="loading-state">טוען הזמנות…</div>';
     try{
@@ -2320,6 +2387,78 @@
       formMsg('reserveError', 'השריון לא נשמר. בדקו את החיבור ונסו שוב, או כתבו לנו ל-fmafingersmassage@gmail.com.');
     }
   }
+  // Look vote: fingers vs logo. Results show only after voting.
+  (function(){
+    const box = document.getElementById('lookVote');
+    if(!box) return;
+    const status = document.getElementById('voteStatus');
+    const NAMES = { fingers: 'לאצבעות המאירות', logo: 'ללוגו הזוהר' };
+    let voted = null;
+    try{ voted = localStorage.getItem('fmaLookVote'); }catch(e){}
+    function visitorId(){
+      try{
+        let v = localStorage.getItem('fmaVid');
+        if(!v){ v = Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem('fmaVid', v); }
+        return v;
+      }catch(e){ return Math.random().toString(36).slice(2) + Date.now().toString(36); }
+    }
+    function show(votes, mine){
+      const total = (Number(votes.fingers) || 0) + (Number(votes.logo) || 0);
+      box.querySelectorAll('.vote-opt').forEach(fig => {
+        const key = fig.dataset.opt, n = Number(votes[key]) || 0;
+        const pct = total ? Math.round(n * 100 / total) : 0;
+        const res = fig.querySelector('.vote-result');
+        res.hidden = false;
+        res.querySelector('.vote-bar span').style.width = pct + '%';
+        res.querySelector('p').textContent = pct + '% · ' + n + (n === 1 ? ' הצבעה' : ' הצבעות');
+        fig.classList.toggle('mine', key === mine);
+        fig.querySelector('.vote-btn').hidden = true;
+      });
+      status.textContent = (mine ? 'הצבעתם ' + NAMES[mine] + '. ' : '') + 'סך הכול ' + total + ' הצבעות. תודה!';
+    }
+    async function loadResults(mine){
+      try{
+        const res = await fetch(APPS_SCRIPT_URL + '?type=votes');
+        const data = await res.json();
+        if(data && data.votes) show(data.votes, mine);
+      }catch(err){ console.error('שגיאה בטעינת ההצבעה:', err); }
+    }
+    box.querySelectorAll('.vote-btn').forEach(btn => btn.addEventListener('click', async () => {
+      const choice = btn.dataset.opt;
+      box.querySelectorAll('.vote-btn').forEach(b => b.disabled = true);
+      status.textContent = 'שומר את ההצבעה...';
+      try{
+        const res = await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'vote', choice, vid: visitorId() })
+        });
+        const data = await res.json();
+        if(!res.ok || !data || data.error || !data.votes) throw new Error('vote not saved');
+        const mine = data.already ? (voted || null) : choice;
+        try{ localStorage.setItem('fmaLookVote', mine || choice); }catch(e){}
+        show(data.votes, mine);
+      }catch(err){
+        console.error('שגיאה בהצבעה:', err);
+        box.querySelectorAll('.vote-btn').forEach(b => b.disabled = false);
+        status.textContent = 'ההצבעה לא נשמרה. נסו שוב בעוד רגע.';
+      }
+    }));
+    if(voted) loadResults(voted);
+  })();
+
+  async function loadVoteStats(){
+    const f = document.getElementById('voteFingers'), l = document.getElementById('voteLogo');
+    if(!f || !l) return;
+    try{
+      const res = await fetch(APPS_SCRIPT_URL + '?type=votes');
+      const data = await res.json();
+      if(!data || !data.votes){ f.textContent = '–'; l.textContent = '–'; return; }
+      f.textContent = String(data.votes.fingers || 0);
+      l.textContent = String(data.votes.logo || 0);
+    }catch(err){ console.error('שגיאה בטעינת ההצבעה:', err); }
+  }
+
   function toggleFaq(btn){
     const item = btn.parentElement;
     const wasOpen = item.classList.contains('open');

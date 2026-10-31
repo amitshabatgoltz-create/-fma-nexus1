@@ -12,6 +12,8 @@
  * Then: Deploy > Manage deployments > edit > Version: New version > Deploy.
  *
  * Orders are stored in a sheet named "Drop02" (created on first use).
+ * The look vote (finger lights vs glowing logo) is stored in a sheet named "Votes":
+ * one vote per anonymous visitor id.
  * The admin password is read from Script Properties (ADMIN_KEY), see security.gs.
  */
 
@@ -28,7 +30,7 @@ function drop02Out_(obj) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-function drop02Sheet_() {
+function drop02Spreadsheet_() {
   let ss = SpreadsheetApp.getActiveSpreadsheet();
   if (!ss) {
     const props = PropertiesService.getScriptProperties();
@@ -36,6 +38,11 @@ function drop02Sheet_() {
     ss = id ? SpreadsheetApp.openById(id) : SpreadsheetApp.create('FMA Drop 02');
     if (!id) props.setProperty('drop02SpreadsheetId', ss.getId());
   }
+  return ss;
+}
+
+function drop02Sheet_() {
+  const ss = drop02Spreadsheet_();
   let sh = ss.getSheetByName(DROP02_SHEET_);
   if (!sh) {
     sh = ss.insertSheet(DROP02_SHEET_);
@@ -44,9 +51,36 @@ function drop02Sheet_() {
   return sh;
 }
 
-// Run once from the editor to create the sheet and grant permissions.
+// Run once from the editor to create the sheets and grant permissions.
 function setupDrop02() {
   drop02Sheet_();
+  votesSheet_();
+}
+
+// ---- Look vote: "fingers" (lit finger strips) or "logo" (glowing logo) ----
+const VOTE_SHEET_ = 'Votes';
+const VOTE_OPTIONS_ = ['fingers', 'logo'];
+
+function votesSheet_() {
+  const ss = drop02Spreadsheet_();
+  let sh = ss.getSheetByName(VOTE_SHEET_);
+  if (!sh) {
+    sh = ss.insertSheet(VOTE_SHEET_);
+    sh.appendRow(['time', 'visitor', 'choice']);
+  }
+  return sh;
+}
+
+function voteRows_() {
+  const sh = votesSheet_();
+  const last = sh.getLastRow();
+  return last < 2 ? [] : sh.getRange(2, 1, last - 1, 3).getValues();
+}
+
+function voteCounts_(rows) {
+  const counts = { fingers: 0, logo: 0 };
+  rows.forEach(r => { if (counts[r[2]] !== undefined) counts[r[2]]++; });
+  return counts;
 }
 
 function drop02Rows_() {
@@ -73,6 +107,9 @@ function drop02Get_(e) {
   if (type === 'stock2') {
     return drop02Out_({ drop: '02', total: DROP02_TOTAL_, remaining: Math.max(0, DROP02_TOTAL_ - drop02Taken_()) });
   }
+  if (type === 'votes') {
+    return drop02Out_({ votes: voteCounts_(voteRows_()) });
+  }
   if (type === 'orders2') {
     if (!drop02AdminOk_(e.parameter.key)) return drop02Out_({ error: 'unauthorized' });
     return drop02Out_(drop02Rows_().map(r => {
@@ -90,7 +127,26 @@ function drop02Get_(e) {
 function drop02Post_(e) {
   let data;
   try { data = JSON.parse(e.postData.contents); } catch (err) { return null; }
-  if (!data || (data.action !== 'order2' && data.action !== 'updateStatus2')) return null;
+  if (!data || ['order2', 'updateStatus2', 'vote'].indexOf(data.action) < 0) return null;
+
+  if (data.action === 'vote') {
+    const choice = VOTE_OPTIONS_.indexOf(data.choice) >= 0 ? data.choice : '';
+    const vid = String(data.vid || '').replace(/[^a-z0-9]/gi, '').slice(0, 40);
+    if (!choice || vid.length < 6) return drop02Out_({ error: 'bad request' });
+    const lock = LockService.getScriptLock();
+    lock.waitLock(10000);
+    try {
+      const rows = voteRows_();
+      const already = rows.some(r => r[1] === vid);
+      if (!already) {
+        votesSheet_().appendRow([new Date(), vid, choice]);
+        rows.push([new Date(), vid, choice]);
+      }
+      return drop02Out_({ ok: true, already: already, votes: voteCounts_(rows) });
+    } finally {
+      lock.releaseLock();
+    }
+  }
 
   if (data.action === 'updateStatus2') {
     if (!drop02AdminOk_(data.key)) return drop02Out_({ error: 'unauthorized' });
