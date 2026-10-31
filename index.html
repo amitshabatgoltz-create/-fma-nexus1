@@ -769,7 +769,6 @@
   section{padding:112px 0;}
   .section-head h2{font-size:clamp(3rem, 6.4vw, 5rem); margin-bottom:16px; font-weight:700;}
   .eyebrow{font-family:var(--mono); font-size:0.78rem; font-weight:500; letter-spacing:0.08em; color:var(--muted); text-transform:uppercase; margin-bottom:14px;}
-  .eyebrow::before{content:"// "; color:var(--line-2);}
   @media (max-width:760px){ section{padding:72px 0;} }
 
   /* hero */
@@ -854,7 +853,6 @@
 
   /* drop band, buy card, prices */
   .drop-band-inner h2{font-family:var(--display); font-size:clamp(3rem, 7vw, 5.4rem); font-weight:700;}
-  .drop-band-inner .eyebrow::before{content:"";}
   .buy-top h3{font-family:var(--display); font-size:2.6rem; font-weight:700; line-height:1;}
   .buy-price{font-family:var(--display); font-size:3rem; font-weight:700;}
   .buy-price small{font-family:var(--mono); font-size:0.8rem;}
@@ -869,7 +867,6 @@
   .eyebrow, .hero-specs dt, .row-tag, .spec-sheet dt, .graph-labels, .pick-label, .prog-time small, .hero-visual .badge, .sim-label, .buy-price small{
     font-family:var(--body); letter-spacing:0.01em; font-weight:600;}
   .eyebrow{font-size:0.82rem; text-transform:none;}
-  .eyebrow::before{font-family:var(--mono);}
   .hero-specs dt, .row-tag, .spec-sheet dt{font-size:0.8rem;}
 
   /* look vote in the hero */
@@ -987,7 +984,7 @@
       <a href="#reviews">חוות דעת</a>
       <a href="#faq">שאלות נפוצות</a>
     </div>
-    <button type="button" class="motion-toggle" id="motionToggle" aria-pressed="false" aria-label="עצירת אנימציות וסרטונים"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor"/><rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor"/></svg></button>
+    <button type="button" class="motion-toggle" id="motionToggle" aria-pressed="false" aria-label="עצירת אנימציות וסרטונים" title="עצירת אנימציות וסרטונים"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor"/><rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor"/></svg></button>
     <a href="#order" target="_blank" rel="noopener noreferrer" class="nav-cta">להזמנה</a>
   </nav>
 </header>
@@ -2634,6 +2631,10 @@
       document.body.classList.toggle('no-motion', off);
       btn.setAttribute('aria-pressed', off ? 'true' : 'false');
       btn.setAttribute('aria-label', off ? 'הפעלת אנימציות וסרטונים' : 'עצירת אנימציות וסרטונים');
+      btn.title = off ? 'הפעלת אנימציות וסרטונים' : 'עצירת אנימציות וסרטונים';
+      btn.innerHTML = off
+        ? '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>'
+        : '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor"/><rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor"/></svg>';
       document.querySelectorAll('#heroVideo, #heroVideo3').forEach(v => { if(off) v.pause(); else v.play().catch(()=>{}); });
       try{ localStorage.setItem('fmaNoMotion', off ? '1' : '0'); }catch(e){}
     }
