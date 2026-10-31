@@ -384,6 +384,10 @@
   .size-guide th, .size-guide td{border-bottom:1px solid var(--line); padding:6px 4px; text-align:right;}
   .size-guide th{color:var(--text);}
   .size-guide p{margin-bottom:10px;}
+  .size-how{display:flex; gap:14px; align-items:center; margin:4px 0 10px;}
+  .size-hand{flex:0 0 96px; width:96px; height:auto; color:var(--muted);}
+  .size-how ol{margin:0;}
+  .size-guide a{color:var(--text);}
   .orders-closed-note{background:var(--card-2); border:1px solid var(--line); border-radius:var(--radius-sm); padding:18px 20px; color:var(--muted); font-size:0.92rem; text-align:center;}
   .stock-note{font-size:0.92rem; font-weight:600; margin-bottom:18px; min-height:1.2em;}
   .stock-note.low{color:var(--red);}
@@ -1073,20 +1077,29 @@
           </fieldset>
           <details class="size-guide">
             <summary>איך יודעים איזו מידה?</summary>
-            <ol>
-              <li>לוקחים סרט מדידה רך, או חוט שאחר כך מודדים בסרגל.</li>
-              <li>מקיפים את כף היד הדומיננטית ממש מתחת לפרקי האצבעות, בלי האגודל. היד פתוחה, והאצבעות צמודות.</li>
-              <li>משווים לטבלה. אם יצא בדיוק בין שתי מידות, לוקחים את הגדולה.</li>
-            </ol>
+            <div class="size-how">
+              <svg class="size-hand" viewBox="0 0 160 190" role="img" aria-label="כף יד פתוחה, וסרגל לרוחב כף היד, ממש מתחת לאצבעות, בלי האגודל">
+                <path d="M46 120 V58 a8 8 0 0 1 16 0 V104 V40 a8 8 0 0 1 16 0 V102 V36 a8 8 0 0 1 16 0 V104 V48 a8 8 0 0 1 16 0 V128 l14 -20 a8 8 0 0 1 13 9 L118 158 q-8 22 -34 22 h-6 q-34 0 -34 -34 Z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+                <line x1="44" y1="112" x2="112" y2="112" stroke="var(--led)" stroke-width="3" stroke-linecap="round"/>
+                <line x1="44" y1="105" x2="44" y2="119" stroke="var(--led)" stroke-width="3" stroke-linecap="round"/>
+                <line x1="112" y1="105" x2="112" y2="119" stroke="var(--led)" stroke-width="3" stroke-linecap="round"/>
+              </svg>
+              <ol>
+                <li>מניחים את היד על השולחן, פתוחה, והאצבעות צמודות.</li>
+                <li>מודדים בסרגל את <b>רוחב כף היד</b>, ממש מתחת לאצבעות. את האגודל לא מודדים.</li>
+                <li>מסתכלים בטבלה איזו מידה מתאימה.</li>
+              </ol>
+            </div>
             <table>
-              <thead><tr><th>מידה</th><th>היקף כף היד</th></tr></thead>
+              <thead><tr><th>מידה</th><th>רוחב כף היד</th></tr></thead>
               <tbody>
-                <tr><td>S</td><td>עד 19 ס"מ</td></tr>
-                <tr><td>M</td><td>19 עד 21 ס"מ</td></tr>
-                <tr><td>L</td><td>21 עד 23 ס"מ</td></tr>
+                <tr><td>S</td><td>עד 8.5 ס"מ</td></tr>
+                <tr><td>M</td><td>8.5 עד 9.5 ס"מ</td></tr>
+                <tr><td>L</td><td>9.5 עד 10.5 ס"מ</td></tr>
               </tbody>
             </table>
-            <p>הכפפה סרוגה ונמתחת, אז היא נוחה גם קצת מעל או מתחת לטווח. בזוג, שתי הכפפות באותה מידה.</p>
+            <p>יצא בדיוק בין שתי מידות? לוקחים את הגדולה. בזוג, שתי הכפפות באותה מידה.</p>
+            <p><b>היד רחבה מ-10.5 ס"מ?</b> כתבו לנו ל-<a href="mailto:fmafingersmassage@gmail.com">fmafingersmassage@gmail.com</a> לפני השריון, ונבדוק יחד מה מתאים.</p>
           </details>
           <label class="field-label" for="reserveName">שם מלא</label>
           <input type="text" id="reserveName" class="reserve-input" autocomplete="name">
