@@ -898,6 +898,17 @@
   @media (max-width:420px){ .vote-grid{gap:10px;} .vote-num{font-size:1.8rem;} .vote-opt figcaption{font-size:0.95rem;} }
   .vote-stats{grid-template-columns:repeat(2,1fr);}
 
+
+  /* desktop: keep the order button in the first screen */
+  @media (min-width:961px){
+    .hero{padding:28px 0 64px;}
+    .hero-grid{align-items:start; gap:48px;}
+    .spec-tag{margin-bottom:18px;}
+    .hero h1{font-size:clamp(3.6rem, 6.6vw, 6.4rem); margin-bottom:18px;}
+    .hero p.lead{margin-bottom:24px;}
+    .hero-specs{margin-top:28px;}
+    .hero-stage{padding-top:52px;}
+  }
   /* ================= Phone polish ================= */
   @media (max-width:760px){
     .build-note{font-size:0.76rem; padding:7px 16px;}
