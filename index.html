@@ -962,7 +962,6 @@
             </div>
             <figcaption>אצבעות מאירות</figcaption>
             <button type="button" class="vote-btn" data-opt="fingers">הצבעה ל-1</button>
-            <div class="vote-result" hidden><div class="vote-bar"><span></span></div><p></p></div>
           </figure>
           <figure class="vote-opt" data-opt="logo">
             <div class="vote-img">
@@ -971,10 +970,9 @@
             </div>
             <figcaption>לוגו זוהר</figcaption>
             <button type="button" class="vote-btn" data-opt="logo">הצבעה ל-2</button>
-            <div class="vote-result" hidden><div class="vote-bar"><span></span></div><p></p></div>
           </figure>
         </div>
-        <p class="vote-status" id="voteStatus" role="status">התוצאות מופיעות אחרי שמצביעים.</p>
+        <p class="vote-status" id="voteStatus" role="status">הצבעה אחת לכל אחד.</p>
         <div class="hero-demos">
           <span class="hero-demos-label">סרטוני הדגמה</span>
           <div class="video-accent">
@@ -2387,7 +2385,7 @@
       formMsg('reserveError', 'השריון לא נשמר. בדקו את החיבור ונסו שוב, או כתבו לנו ל-fmafingersmassage@gmail.com.');
     }
   }
-  // Look vote: fingers vs logo. Results show only after voting.
+  // Look vote: fingers vs logo. Results are visible only in the admin panel.
   (function(){
     const box = document.getElementById('lookVote');
     if(!box) return;
@@ -2402,26 +2400,12 @@
         return v;
       }catch(e){ return Math.random().toString(36).slice(2) + Date.now().toString(36); }
     }
-    function show(votes, mine){
-      const total = (Number(votes.fingers) || 0) + (Number(votes.logo) || 0);
+    function markVoted(mine){
       box.querySelectorAll('.vote-opt').forEach(fig => {
-        const key = fig.dataset.opt, n = Number(votes[key]) || 0;
-        const pct = total ? Math.round(n * 100 / total) : 0;
-        const res = fig.querySelector('.vote-result');
-        res.hidden = false;
-        res.querySelector('.vote-bar span').style.width = pct + '%';
-        res.querySelector('p').textContent = pct + '% · ' + n + (n === 1 ? ' הצבעה' : ' הצבעות');
-        fig.classList.toggle('mine', key === mine);
+        fig.classList.toggle('mine', fig.dataset.opt === mine);
         fig.querySelector('.vote-btn').hidden = true;
       });
-      status.textContent = (mine ? 'הצבעתם ' + NAMES[mine] + '. ' : '') + 'סך הכול ' + total + ' הצבעות. תודה!';
-    }
-    async function loadResults(mine){
-      try{
-        const res = await fetch(APPS_SCRIPT_URL + '?type=votes');
-        const data = await res.json();
-        if(data && data.votes) show(data.votes, mine);
-      }catch(err){ console.error('שגיאה בטעינת ההצבעה:', err); }
+      status.textContent = mine ? 'תודה! הצבעתם ' + NAMES[mine] + '.' : 'תודה! כבר הצבעתם.';
     }
     box.querySelectorAll('.vote-btn').forEach(btn => btn.addEventListener('click', async () => {
       const choice = btn.dataset.opt;
@@ -2434,24 +2418,24 @@
           body: JSON.stringify({ action: 'vote', choice, vid: visitorId() })
         });
         const data = await res.json();
-        if(!res.ok || !data || data.error || !data.votes) throw new Error('vote not saved');
-        const mine = data.already ? (voted || null) : choice;
-        try{ localStorage.setItem('fmaLookVote', mine || choice); }catch(e){}
-        show(data.votes, mine);
+        if(!res.ok || !data || data.error || !data.ok) throw new Error('vote not saved');
+        const mine = data.already ? voted : choice;
+        if(mine){ try{ localStorage.setItem('fmaLookVote', mine); }catch(e){} }
+        markVoted(mine);
       }catch(err){
         console.error('שגיאה בהצבעה:', err);
         box.querySelectorAll('.vote-btn').forEach(b => b.disabled = false);
         status.textContent = 'ההצבעה לא נשמרה. נסו שוב בעוד רגע.';
       }
     }));
-    if(voted) loadResults(voted);
+    if(voted) markVoted(voted);
   })();
 
   async function loadVoteStats(){
     const f = document.getElementById('voteFingers'), l = document.getElementById('voteLogo');
     if(!f || !l) return;
     try{
-      const res = await fetch(APPS_SCRIPT_URL + '?type=votes');
+      const res = await fetch(APPS_SCRIPT_URL + '?type=votes&key=' + encodeURIComponent(ADMIN_KEY));
       const data = await res.json();
       if(!data || !data.votes){ f.textContent = '–'; l.textContent = '–'; return; }
       f.textContent = String(data.votes.fingers || 0);

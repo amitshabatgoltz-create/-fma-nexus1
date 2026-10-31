@@ -13,7 +13,7 @@
  *
  * Orders are stored in a sheet named "Drop02" (created on first use).
  * The look vote (finger lights vs glowing logo) is stored in a sheet named "Votes":
- * one vote per anonymous visitor id.
+ * one vote per anonymous visitor id. Only the admin panel can read the results.
  * The admin password is read from Script Properties (ADMIN_KEY), see security.gs.
  */
 
@@ -108,6 +108,7 @@ function drop02Get_(e) {
     return drop02Out_({ drop: '02', total: DROP02_TOTAL_, remaining: Math.max(0, DROP02_TOTAL_ - drop02Taken_()) });
   }
   if (type === 'votes') {
+    if (!drop02AdminOk_(e.parameter.key)) return drop02Out_({ error: 'unauthorized' });
     return drop02Out_({ votes: voteCounts_(voteRows_()) });
   }
   if (type === 'orders2') {
@@ -136,13 +137,9 @@ function drop02Post_(e) {
     const lock = LockService.getScriptLock();
     lock.waitLock(10000);
     try {
-      const rows = voteRows_();
-      const already = rows.some(r => r[1] === vid);
-      if (!already) {
-        votesSheet_().appendRow([new Date(), vid, choice]);
-        rows.push([new Date(), vid, choice]);
-      }
-      return drop02Out_({ ok: true, already: already, votes: voteCounts_(rows) });
+      const already = voteRows_().some(r => r[1] === vid);
+      if (!already) votesSheet_().appendRow([new Date(), vid, choice]);
+      return drop02Out_({ ok: true, already: already });   // results are for the admin panel only
     } finally {
       lock.releaseLock();
     }
