@@ -900,6 +900,65 @@
   .hero-demos .sound-toggle svg{width:13px; height:13px;}
   @media (max-width:420px){ .vote-grid{gap:10px;} .vote-num{font-size:1.8rem;} .vote-opt figcaption{font-size:0.95rem;} }
   .vote-stats{grid-template-columns:repeat(2,1fr);}
+
+  /* ================= Phone polish ================= */
+  @media (max-width:760px){
+    .build-note{font-size:0.76rem; padding:7px 16px;}
+    nav.wrap{height:62px; gap:10px;}
+    .logo{font-size:1.8rem;}
+    .nav-cta{display:none;}                    /* the floating order bar takes over on phones */
+    .nav-toggle, .motion-toggle{width:42px; height:42px;}
+    .builder-badge{display:none;}              /* the same offer sits inside the order card */
+    section{padding:60px 0;}
+    .section-head{margin-bottom:26px;}
+    .section-head h2{font-size:clamp(2.7rem, 12vw, 3.6rem); margin-bottom:10px;}
+    .section-head p{font-size:1rem;}
+    body{padding-bottom:84px;}                 /* room for the floating order bar */
+  }
+  @media (max-width:960px){
+    /* hero order on small screens: tag, headline, lead, the two renders, buttons, numbers */
+    .hero-grid{display:flex; flex-direction:column; align-items:stretch; gap:0;}
+    .hero-copy{display:contents;}
+    .hero-copy .spec-tag{order:1; align-self:flex-start;}
+    .hero-copy h1{order:2;}
+    .hero-copy .lead{order:3;}
+    .hero-stage{order:4; margin:4px 0 28px;}
+    .hero-copy .hero-actions{order:5;}
+    .hero-copy .hero-specs{order:6;}
+  }
+  @media (max-width:520px){
+    .hero{padding:26px 0 44px;}
+    .spec-tag{margin-bottom:18px; font-size:0.8rem; padding:6px 10px;}
+    .hero h1{font-size:clamp(3.3rem, 16.5vw, 4.6rem); margin-bottom:16px;}
+    .hero p.lead{font-size:1.02rem; line-height:1.6; margin-bottom:20px;}
+    .vote-q{font-size:0.95rem; margin-bottom:10px;}
+    .vote-opt{gap:8px;}
+    .vote-opt figcaption{font-size:0.92rem;}
+    .vote-btn{min-height:44px; font-size:0.92rem;}
+    .vote-status{margin-top:10px; font-size:0.85rem;}
+    .hero-demos{margin-top:16px; padding-top:14px;}
+    .hero-demos .video-accent, .hero-demos .video-accent-2{width:64px; flex-basis:64px;}
+    .hero-actions{gap:10px;}
+    .hero-specs{grid-template-columns:repeat(4, 1fr); margin-top:26px;}
+    .hero-specs div{padding:12px 0 0; border:none; margin:0; text-align:center;}
+    .hero-specs div + div{border-inline-start:1px solid var(--line);}
+    .hero-specs dt{font-size:0.7rem; margin-bottom:4px;}
+    .hero-specs dd{font-size:1.9rem;}
+    .proof-row b{font-size:1.7rem;}
+    .proof-row p, .proof-row p + p{padding:12px 0; font-size:0.9rem;}
+    .problem .statements p{padding:18px 0; font-size:1.15rem;}
+    .prog-panel{padding:22px 18px;}
+    .prog-time{font-size:4.6rem;}
+    .spec-sheet div{padding:14px 0;}
+    .spec-sheet dd{font-size:0.97rem;}
+    .buy .wrap{padding:0 12px;}
+    .buy-card{padding:24px 16px; border-radius:14px;}
+    .buy-top h3{font-size:2.2rem;}
+    .buy-price{font-size:2.6rem;}
+    .drop-band{padding-bottom:56px;}
+    .drop-band-inner{padding:36px 20px;}
+    .faq-q{font-size:0.98rem; padding-block:16px;}
+  }
 </style>
 </head>
 <body>
@@ -914,7 +973,7 @@
 </aside>
 
 <aside class="build-note" aria-label="עדכון">
-  האתר מתעדכן: תמונות הכפפה הן הדמיה עד שיצולמו תמונות של היחידות האמיתיות.
+  התמונות באתר הן הדמיה, עד שנצלם את הכפפות האמיתיות.
 </aside>
 
 <header>
