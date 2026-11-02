@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מיקרופון USB מבודד רעש · שריון יחידה</title>
+<meta name="description" content="מיקרופון USB עם סינון רעשי רקע מלא ותאורת RGB. שריינו יחידה מהסדרה הראשונה.">
+<meta name="theme-color" content="#07070B">
+<meta property="og:title" content="מיקרופון USB מבודד רעש">
+<meta property="og:description" content="סינון רעשי רקע מלא, חיבור USB אחד, תאורת RGB. שריינו יחידה מהסדרה הראשונה.">
+<meta property="og:image" content="mic.jpg">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#07070B; --bg-2:#0D0D14; --card:#13131C; --card-2:#1A1A26;
+    --line:rgba(255,255,255,.09); --line-2:rgba(255,255,255,.18);
+    --text:#F4F4F8; --muted:#A3A3B5;
+    --cyan:#3EE6FF; --pink:#FF4FD8; --lime:#9CFF5A; --red:#FF5C6C;
+    --rgb:linear-gradient(90deg,var(--cyan),var(--pink) 50%,var(--lime));
+    --body:'Rubik',Arial,sans-serif; --mono:'IBM Plex Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  html,body{overflow-x:clip;}
+  body{background:var(--bg); color:var(--text); font-family:var(--body); font-size:17px; line-height:1.65; -webkit-font-smoothing:antialiased;}
+  a{color:inherit;}
+  img{display:block; max-width:100%;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 20px;}
+  :focus-visible{outline:2px solid var(--cyan); outline-offset:3px;}
+
+  /* nav */
+  .nav{position:sticky; top:0; z-index:20; background:rgba(7,7,11,.8); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom:1px solid var(--line);}
+  .nav .wrap{display:flex; align-items:center; justify-content:space-between; height:64px;}
+  .logo{font-weight:800; letter-spacing:.02em; font-size:1.05rem; display:flex; align-items:center; gap:10px; text-decoration:none;}
+  .logo-dot{width:10px; height:10px; border-radius:50%; background:var(--rgb); box-shadow:0 0 12px var(--pink);}
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:50px; padding:0 26px; border-radius:999px; font:600 1rem var(--body); border:0; cursor:pointer; text-decoration:none; transition:box-shadow .2s, transform .2s;}
+  .btn-primary{background:var(--text); color:var(--bg);}
+  .btn-primary:hover{box-shadow:0 0 0 3px rgba(62,230,255,.25), 0 0 28px rgba(255,79,216,.35);}
+  .btn-primary:active{transform:scale(.98);}
+  .btn-sm{min-height:42px; padding:0 18px; font-size:.95rem;}
+  .btn[disabled]{opacity:.45; cursor:not-allowed;}
+
+  /* hero */
+  .hero{position:relative; padding:40px 0 72px;}
+  .hero .wrap{display:grid; grid-template-columns:1.05fr .95fr; gap:48px; align-items:center;}
+  .tag{display:inline-block; font:500 .78rem var(--mono); letter-spacing:.08em; color:var(--muted); border:1px solid var(--line-2); border-radius:6px; padding:5px 10px; margin-bottom:22px; direction:ltr;}
+  h1{font-size:clamp(2.6rem,6.4vw,4.6rem); line-height:1.02; font-weight:800; letter-spacing:-.01em; margin-bottom:22px;}
+  h1 .glow{color:var(--cyan); text-shadow:0 0 24px rgba(62,230,255,.45);}
+  .lead{font-size:1.2rem; color:var(--muted); max-width:34ch; margin-bottom:32px;}
+  .hero-cta{display:flex; flex-wrap:wrap; gap:14px; align-items:center;}
+  .hero-note{font-size:.92rem; color:var(--muted);}
+
+  .shot{position:relative; border-radius:22px; overflow:hidden; border:1px solid var(--line); background:var(--bg-2); aspect-ratio:896/1200;}
+  .shot img{width:100%; height:100%; object-fit:cover;}
+  .shot::after{content:""; position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(120% 70% at 85% 35%, rgba(7,7,11,.55), transparent 60%), linear-gradient(to top, rgba(7,7,11,.7), transparent 30%);}
+  .sim{position:absolute; top:14px; right:14px; z-index:2; font:600 .82rem var(--body); background:rgba(7,7,11,.72); color:var(--text); border:1px solid var(--line-2); border-radius:999px; padding:6px 14px; backdrop-filter:blur(6px);}
+  .shot-glow{position:absolute; inset:-14% -10% auto; height:70%; z-index:-1; filter:blur(70px); opacity:.45; background:radial-gradient(circle at 40% 50%, var(--pink), transparent 55%), radial-gradient(circle at 65% 40%, var(--cyan), transparent 55%);}
+  .shot-col{position:relative; isolation:isolate;}
+
+  /* sections */
+  section{padding:88px 0;}
+  .band{background:var(--bg-2); border-block:1px solid var(--line);}
+  h2{font-size:clamp(2rem,4.2vw,3rem); line-height:1.08; font-weight:800; margin-bottom:14px;}
+  .sub{color:var(--muted); max-width:56ch; margin-bottom:44px;}
+  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
+  .feat{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:28px 24px;}
+  .feat-ico{width:44px; height:44px; border-radius:12px; display:grid; place-items:center; background:var(--card-2); border:1px solid var(--line-2); margin-bottom:18px;}
+  .feat-ico svg{width:22px; height:22px;}
+  .feat h3{font-size:1.2rem; margin-bottom:8px;}
+  .feat p{color:var(--muted); font-size:1rem;}
+
+  /* noise demo bars */
+  .noise{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:18px;}
+  .wave{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:22px;}
+  .wave-label{font:500 .78rem var(--mono); letter-spacing:.06em; color:var(--muted); margin-bottom:14px; direction:ltr; text-align:right;}
+  .bars{display:flex; align-items:center; gap:3px; height:70px; direction:ltr;}
+  .bars i{flex:1; border-radius:2px; background:var(--muted); opacity:.55;}
+  .bars.clean i{background:var(--cyan); opacity:1;}
+  @media (prefers-reduced-motion:no-preference){
+    .bars i{animation:pulse 1.4s ease-in-out infinite alternate; animation-delay:calc(var(--d) * -1s);}
+  }
+  @keyframes pulse{from{transform:scaleY(.55);} to{transform:scaleY(1);}}
+
+  /* reserve */
+  .reserve{display:grid; grid-template-columns:.9fr 1.1fr; gap:48px; align-items:start;}
+  .points{list-style:none; display:grid; gap:14px; margin-top:8px;}
+  .points li{display:flex; gap:12px; color:var(--muted);}
+  .points li::before{content:""; flex:none; width:8px; height:8px; margin-top:10px; border-radius:50%; background:var(--lime); box-shadow:0 0 10px var(--lime);}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:18px; padding:30px;}
+  .field{display:grid; gap:6px; margin-bottom:16px;}
+  .field label{font-weight:500; font-size:.95rem;}
+  .opt{color:var(--muted); font-weight:400;}
+  .input{width:100%; background:var(--bg); color:var(--text); border:1px solid var(--line-2); border-radius:8px; padding:13px 14px; font:16px var(--body);}
+  .input::placeholder{color:#6F6F80;}
+  .input:focus{outline:none; border-color:var(--cyan); box-shadow:0 0 0 3px rgba(62,230,255,.2);}
+  textarea.input{resize:vertical; min-height:84px;}
+  .hint{font-size:.85rem; color:var(--muted);}
+  .qty{display:flex; align-items:center; gap:0; width:max-content; border:1px solid var(--line-2); border-radius:999px; overflow:hidden;}
+  .qty button{width:48px; height:48px; background:transparent; border:0; color:var(--text); font-size:1.3rem; cursor:pointer;}
+  .qty button:hover{background:var(--card-2);}
+  .qty output{min-width:44px; text-align:center; font:500 1.1rem var(--mono);}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .hp{position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap;}
+  .err{color:var(--red); font-size:.92rem; min-height:1.4em; margin-bottom:10px;}
+  .submit{width:100%;}
+  .done{text-align:center; padding:20px 6px;}
+  .done-ico{width:64px; height:64px; margin:0 auto 18px; border-radius:50%; display:grid; place-items:center; background:rgba(156,255,90,.12); border:1px solid rgba(156,255,90,.45);}
+  .done h3{font-size:1.5rem; margin-bottom:8px;}
+  .done p{color:var(--muted);}
+
+  /* faq */
+  details{border-bottom:1px solid var(--line); padding:18px 0;}
+  summary{cursor:pointer; font-weight:500; font-size:1.08rem; list-style:none; display:flex; justify-content:space-between; gap:16px;}
+  summary::-webkit-details-marker{display:none;}
+  summary::after{content:"+"; color:var(--muted); font-size:1.4rem; line-height:1;}
+  details[open] summary::after{content:"−";}
+  details p{color:var(--muted); margin-top:10px; max-width:60ch;}
+
+  footer{padding:40px 0 56px; color:var(--muted); font-size:.9rem; border-top:1px solid var(--line);}
+  footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;}
+
+  .sticky-cta{display:none;}
+  @media (max-width:900px){
+    .hero{padding-top:24px;}
+    .hero .wrap, .reserve{grid-template-columns:1fr; gap:32px;}
+    .shot-col{order:-1; max-width:460px; width:100%; margin:0 auto;}
+    .shot{aspect-ratio:1/1.08;} .shot img{object-position:30% 20%;}
+    .grid3{grid-template-columns:1fr;}
+    .noise{grid-template-columns:1fr;}
+    section{padding:64px 0;}
+    .sticky-cta{display:flex; position:fixed; inset:auto 16px 16px; z-index:30; transition:opacity .2s, transform .2s;}
+    .sticky-cta .btn{width:100%; box-shadow:0 8px 30px rgba(0,0,0,.5);}
+    .sticky-cta.hide{opacity:0; transform:translateY(20px); pointer-events:none;}
+    .nav .btn{display:none;}
+  }
+  @media (max-width:480px){ .row2{grid-template-columns:1fr;} .card{padding:22px 18px;} }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="#top"><span class="logo-dot" aria-hidden="true"></span>SILENT·MIC</a>
+    <a class="btn btn-primary btn-sm" href="#reserve">שריינו לי יחידה</a>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <span class="tag">USB · RGB · NOISE CANCEL</span>
+        <h1>רק הקול שלך.<br><span class="glow">כל השאר נעלם.</span></h1>
+        <p class="lead">מיקרופון USB מקצועי שמסנן רעשי רקע לחלוטין: מקלדת, מזגן, רחוב. מחברים למחשב ומתחילים לדבר.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#reserve">שריינו לי יחידה</a>
+          <span class="hero-note">בלי תשלום עכשיו. ניצור קשר לפני המשלוח.</span>
+        </div>
+      </div>
+      <div class="shot-col">
+        <div class="shot-glow" aria-hidden="true"></div>
+        <div class="shot">
+          <span class="sim">הדמיה</span>
+          <picture>
+            <source srcset="mic.webp" type="image/webp">
+            <img src="mic.jpg" width="896" height="1200" alt="הדמיה של המיקרופון: ראש רשת מואר בצבעי RGB, גוף עם הדפס מעגלים, כפתור עוצמה ומעמד שולחני, עם כבל USB">
+          </picture>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="band" id="features">
+    <div class="wrap">
+      <h2>נבנה לשקט</h2>
+      <p class="sub">לגיימינג, סטרימינג, פודקאסט ושיחות עבודה. מה שנכנס למיקרופון זה רק אתם.</p>
+      <div class="grid3">
+        <article class="feat">
+          <div class="feat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round"><path d="M3 12h2M7 8v8M11 5v14M15 9v6M19 11v2"/><path d="M2 2l20 20" stroke="var(--pink)"/></svg></div>
+          <h3>בידוד רעשים מלא</h3>
+          <p>סינון רעשי רקע שמשאיר רק את הקול שלכם. הקלקות מקלדת, מאוורר ורעש רחוב לא עוברים.</p>
+        </article>
+        <article class="feat">
+          <div class="feat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v13"/><path d="M8 6l4-4 4 4"/><circle cx="12" cy="19" r="3"/><path d="M6 11v2a2 2 0 0 0 2 2h4M18 9v4a2 2 0 0 1-2 2h-4"/></svg></div>
+          <h3>מחברים ועובד</h3>
+          <p>כבל USB אחד, בלי דרייברים ובלי כרטיס קול. עובד עם Windows, Mac, PlayStation ו־Discord.</p>
+        </article>
+        <article class="feat">
+          <div class="feat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></div>
+          <h3>תאורת RGB</h3>
+          <p>ראש מואר בצבעים מתחלפים וכפתור עוצמה בגוף. נראה טוב במצלמה ועל השולחן.</p>
+        </article>
+      </div>
+
+      <div class="noise" aria-hidden="true">
+        <div class="wave"><p class="wave-label">MIC רגיל · קול + רעש</p><div class="bars" id="barsNoisy"></div></div>
+        <div class="wave"><p class="wave-label">SILENT·MIC · רק קול</p><div class="bars clean" id="barsClean"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="reserve">
+    <div class="wrap reserve">
+      <div>
+        <span class="tag">BATCH 01</span>
+        <h2>שריינו יחידה מהסדרה הראשונה</h2>
+        <p class="sub" style="margin-bottom:20px">הכמות בסדרה הראשונה מוגבלת. השריון שומר לכם מקום ברשימה.</p>
+        <ul class="points">
+          <li>לא משלמים עכשיו. השריון לא מחייב.</li>
+          <li>ניצור איתכם קשר בטלפון או בוואטסאפ לפני המשלוח.</li>
+          <li>המחיר ותאריך המשלוח יפורסמו בקרוב.</li>
+        </ul>
+      </div>
+
+      <div class="card" id="formCard">
+        <form id="reserveForm" novalidate>
+          <div class="field">
+            <label for="fName">שם מלא</label>
+            <input class="input" id="fName" name="name" autocomplete="name" required maxlength="80">
+          </div>
+          <div class="row2">
+            <div class="field">
+              <label for="fPhone">טלפון נייד</label>
+              <input class="input" id="fPhone" name="phone" type="tel" inputmode="numeric" autocomplete="tel" maxlength="10" placeholder="0501234567" required aria-describedby="phoneHint" dir="ltr" style="text-align:right">
+              <span class="hint" id="phoneHint">10 ספרות, מתחיל ב־05</span>
+            </div>
+            <div class="field">
+              <label for="fCity">עיר <span class="opt">(רשות)</span></label>
+              <input class="input" id="fCity" name="city" autocomplete="address-level2" maxlength="60">
+            </div>
+          </div>
+          <div class="field">
+            <label id="qtyLabel">כמות</label>
+            <div class="qty" role="group" aria-labelledby="qtyLabel">
+              <button type="button" id="qtyPlus" aria-label="הוספת יחידה">+</button>
+              <output id="qtyVal" aria-live="polite">1</output>
+              <button type="button" id="qtyMinus" aria-label="הורדת יחידה">−</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="fNote">הערה <span class="opt">(רשות)</span></label>
+            <textarea class="input" id="fNote" name="note" maxlength="400" placeholder="למשל: למה תשתמשו במיקרופון"></textarea>
+          </div>
+          <div class="hp" aria-hidden="true"><label for="fHp">אל תמלאו</label><input id="fHp" tabindex="-1" autocomplete="off"></div>
+          <p class="err" id="formErr" role="alert"></p>
+          <button class="btn btn-primary submit" id="submitBtn" type="submit">שריינו לי יחידה</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="faq">
+    <div class="wrap" style="max-width:820px">
+      <h2>שאלות</h2>
+      <details><summary>זה מחייב אותי לקנות?</summary><p>לא. השריון שומר לכם מקום. נתקשר לפני המשלוח, ורק אז מחליטים ומשלמים.</p></details>
+      <details><summary>מה המחיר?</summary><p>המחיר הסופי יפורסם בקרוב. מי ששריין יקבל אותו ראשון.</p></details>
+      <details><summary>התמונה היא של המוצר האמיתי?</summary><p>לא, זו הדמיה. המוצר עצמו נראה בערך כך, ותמונות אמיתיות יעלו לפני המשלוח.</p></details>
+      <details><summary>עם מה זה עובד?</summary><p>כל מחשב עם יציאת USB (Windows או Mac), וגם קונסולות שתומכות במיקרופון USB. בלי התקנה.</p></details>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>SILENT·MIC · סדרה ראשונה</span>
+    <span>התמונות באתר הן הדמיה</span>
+  </div>
+</footer>
+
+<div class="sticky-cta" id="stickyCta"><a class="btn btn-primary" href="#reserve">שריינו לי יחידה</a></div>
+
+<script src="config.js"></script>
+<script>
+(function(){
+  // decorative waveform bars
+  function fill(id, noisy){
+    const el = document.getElementById(id); let html = '';
+    for(let i=0;i<48;i++){
+      const voice = Math.max(0, Math.sin(i/48*Math.PI*3)) * (0.5 + 0.5*Math.sin(i*1.7));
+      const h = noisy ? 25 + voice*60 + ((i*37)%23) : 4 + voice*90;
+      html += '<i style="height:'+Math.min(100,h).toFixed(0)+'%;--d:'+((i*0.137)%1.4).toFixed(2)+'"></i>';
+    }
+    el.innerHTML = html;
+  }
+  fill('barsNoisy', true); fill('barsClean', false);
+
+  // quantity
+  let qty = 1; const MAX = 5;
+  const qv = document.getElementById('qtyVal');
+  const setQ = n => { qty = Math.min(MAX, Math.max(1, n)); qv.textContent = qty; };
+  document.getElementById('qtyPlus').onclick = () => setQ(qty + 1);
+  document.getElementById('qtyMinus').onclick = () => setQ(qty - 1);
+
+  // phone: digits only
+  const phone = document.getElementById('fPhone');
+  phone.addEventListener('input', () => { phone.value = phone.value.replace(/\D/g,'').slice(0,10); });
+
+  // hide the floating phone button while the form is on screen
+  const sticky = document.getElementById('stickyCta');
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(es => es.forEach(e => sticky.classList.toggle('hide', e.isIntersecting)), {threshold:.1})
+      .observe(document.getElementById('reserve'));
+  }
+
+  const form = document.getElementById('reserveForm');
+  const err = document.getElementById('formErr');
+  const btn = document.getElementById('submitBtn');
+  form.addEventListener('submit', async ev => {
+    ev.preventDefault(); err.textContent = '';
+    const name = document.getElementById('fName').value.trim();
+    const ph = phone.value.trim();
+    if(!name){ err.textContent = 'נא למלא שם.'; document.getElementById('fName').focus(); return; }
+    if(!/^05\d{8}$/.test(ph)){ err.textContent = 'מספר הטלפון צריך 10 ספרות ולהתחיל ב־05.'; phone.focus(); return; }
+    if(!window.MIC_API_URL){ err.textContent = 'השריון עוד לא פתוח. נסו שוב בקרוב.'; return; }
+
+    btn.disabled = true; btn.textContent = 'שולח...';
+    try{
+      const res = await fetch(window.MIC_API_URL, {
+        method:'POST',
+        headers:{'Content-Type':'text/plain;charset=utf-8'},   // avoids a CORS preflight to Apps Script
+        body: JSON.stringify({
+          action:'reserve', name, phone:ph, qty,
+          city: document.getElementById('fCity').value.trim(),
+          note: document.getElementById('fNote').value.trim(),
+          hp: document.getElementById('fHp').value
+        })
+      });
+      const data = await res.json();
+      if(!data || !data.ok) throw new Error(data && data.error || 'failed');
+      document.getElementById('formCard').innerHTML =
+        '<div class="done" tabindex="-1" id="doneMsg"><div class="done-ico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9CFF5A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div>' +
+        '<h3>שריינו לך ' + (qty > 1 ? qty + ' יחידות' : 'יחידה') + '</h3><p>ניצור קשר בטלפון ' + ph + ' לפני המשלוח.</p></div>';
+      document.getElementById('doneMsg').focus();
+    }catch(e){
+      err.textContent = 'השליחה נכשלה. בדקו את החיבור ונסו שוב.';
+      btn.disabled = false; btn.textContent = 'שריינו לי יחידה';
+    }
+  });
+})();
+</script>
+</body>
+</html>

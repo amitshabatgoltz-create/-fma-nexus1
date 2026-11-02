@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>הזמנות מיקרופונים</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#07070B">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="הזמנות">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#07070B; --card:#13131C; --card-2:#1A1A26;
+    --line:rgba(255,255,255,.09); --line-2:rgba(255,255,255,.18);
+    --text:#F4F4F8; --muted:#A3A3B5;
+    --cyan:#3EE6FF; --pink:#FF4FD8; --lime:#9CFF5A; --red:#FF5C6C; --amber:#FFC24D;
+    --body:'Rubik',Arial,sans-serif; --mono:'IBM Plex Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--bg); color:var(--text); font-family:var(--body); font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased; min-height:100vh;}
+  :focus-visible{outline:2px solid var(--cyan); outline-offset:2px;}
+  button{font-family:inherit;}
+  .wrap{max-width:860px; margin:0 auto; padding:calc(16px + env(safe-area-inset-top)) 16px calc(40px + env(safe-area-inset-bottom));}
+
+  /* login */
+  .gate{min-height:100vh; display:grid; place-items:center; padding:24px;}
+  .gate-card{width:100%; max-width:360px; background:var(--card); border:1px solid var(--line); border-radius:18px; padding:32px 26px; text-align:center;}
+  .gate-card img{width:64px; height:64px; margin:0 auto 16px; border-radius:16px;}
+  .gate-card h1{font-size:1.4rem; margin-bottom:6px;}
+  .gate-card p{color:var(--muted); font-size:.92rem; margin-bottom:20px;}
+  .input{width:100%; background:var(--bg); color:var(--text); border:1px solid var(--line-2); border-radius:10px; padding:13px 14px; font:16px var(--body); text-align:center;}
+  .input:focus{outline:none; border-color:var(--cyan); box-shadow:0 0 0 3px rgba(62,230,255,.2);}
+  .remember{display:flex; align-items:center; justify-content:center; gap:10px; min-height:44px; margin:8px 0; color:var(--muted); font-size:.92rem; cursor:pointer;}
+  .remember input{width:18px; height:18px; accent-color:var(--cyan);}
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:48px; padding:0 22px; border-radius:999px; font:600 1rem var(--body); border:0; cursor:pointer; text-decoration:none;}
+  .btn-primary{background:var(--text); color:var(--bg); width:100%;}
+  .btn[disabled]{opacity:.5;}
+  .gate-err{color:var(--red); font-size:.9rem; min-height:1.4em; margin-top:10px;}
+
+  /* header */
+  .top{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px;}
+  .top h1{font-size:1.35rem; display:flex; align-items:center; gap:10px;}
+  .live{width:8px; height:8px; border-radius:50%; background:var(--lime); box-shadow:0 0 8px var(--lime);}
+  .live.off{background:var(--muted); box-shadow:none;}
+  .icon-btn{width:44px; height:44px; border-radius:12px; background:var(--card); border:1px solid var(--line); color:var(--text); display:grid; place-items:center; cursor:pointer;}
+  .icon-btn svg{width:20px; height:20px;}
+  .icon-btn.spin svg{animation:spin .8s linear infinite;}
+  @keyframes spin{to{transform:rotate(-360deg);}}
+  .top-actions{display:flex; gap:8px;}
+  .updated{color:var(--muted); font-size:.82rem; margin:-10px 0 16px;}
+
+  /* stats */
+  .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:18px;}
+  .stat{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 14px 12px;}
+  .stat b{display:block; font:500 2rem/1.1 var(--mono);}
+  .stat span{color:var(--muted); font-size:.85rem;}
+  .stat.hl b{color:var(--cyan);}
+
+  /* toolbar */
+  .tools{display:flex; gap:8px; margin-bottom:12px;}
+  .tools .input{text-align:right; padding:11px 14px;}
+  .chips{display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; margin-bottom:14px; scrollbar-width:none;}
+  .chip{flex:none; min-height:38px; padding:0 14px; border-radius:999px; background:transparent; border:1px solid var(--line-2); color:var(--muted); font-size:.9rem; cursor:pointer;}
+  .chip[aria-pressed="true"]{background:var(--text); color:var(--bg); border-color:var(--text);}
+
+  /* orders */
+  .list{display:grid; gap:10px;}
+  .order{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px;}
+  .order.new-flash{animation:flash 2.4s ease-out;}
+  @keyframes flash{from{border-color:var(--cyan); box-shadow:0 0 0 3px rgba(62,230,255,.25);}}
+  .o-head{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
+  .o-name{font-weight:700; font-size:1.08rem;}
+  .o-time{color:var(--muted); font-size:.82rem;}
+  .o-qty{flex:none; font:500 .9rem var(--mono); border:1px solid var(--line-2); border-radius:8px; padding:4px 10px; white-space:nowrap;}
+  .o-meta{display:flex; flex-wrap:wrap; gap:6px 14px; margin-top:8px; color:var(--muted); font-size:.92rem;}
+  .o-note{margin-top:10px; padding:10px 12px; background:var(--bg); border-radius:10px; font-size:.92rem; white-space:pre-wrap; overflow-wrap:anywhere;}
+  .o-actions{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; align-items:center;}
+  .act{display:inline-flex; align-items:center; gap:6px; min-height:40px; padding:0 14px; border-radius:999px; border:1px solid var(--line-2); color:var(--text); text-decoration:none; font-size:.9rem; background:transparent;}
+  .act svg{width:16px; height:16px;}
+  .status{min-height:40px; border-radius:999px; padding:0 14px; font:500 .9rem var(--body); background:var(--card-2); color:var(--text); border:1px solid var(--line-2); margin-inline-start:auto;}
+  .order[data-status="חדש"]{border-inline-start:3px solid var(--cyan);}
+  .order[data-status="בוטל"]{opacity:.55;}
+  .empty, .error{text-align:center; color:var(--muted); padding:48px 16px; background:var(--card); border:1px dashed var(--line-2); border-radius:14px;}
+  .error{color:var(--red);}
+  .foot{display:flex; justify-content:center; gap:16px; margin-top:28px; font-size:.88rem;}
+  .link{background:none; border:0; color:var(--muted); text-decoration:underline; cursor:pointer; padding:10px; font-size:.88rem;}
+  .toast{position:fixed; inset:auto 16px calc(16px + env(safe-area-inset-bottom)); max-width:420px; margin:0 auto; background:var(--text); color:var(--bg); border-radius:12px; padding:12px 16px; font-weight:500; text-align:center; transform:translateY(140%); transition:transform .25s; z-index:50;}
+  .toast.show{transform:none;}
+  @media (max-width:420px){ .stat b{font-size:1.6rem;} .status{margin-inline-start:0; width:100%;} }
+</style>
+</head>
+<body>
+
+<div class="gate" id="gate">
+  <form class="gate-card" id="gateForm">
+    <img src="icon-192.png" alt="" width="64" height="64">
+    <h1>הזמנות מיקרופונים</h1>
+    <p>הזינו את סיסמת הניהול</p>
+    <label for="pw" style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)">סיסמה</label>
+    <input class="input" type="password" id="pw" autocomplete="current-password" required>
+    <label class="remember"><input type="checkbox" id="remember" checked> לזכור אותי במכשיר הזה</label>
+    <button class="btn btn-primary" id="gateBtn" type="submit">כניסה</button>
+    <p class="gate-err" id="gateErr" role="alert"></p>
+  </form>
+</div>
+
+<div class="wrap" id="app" hidden>
+  <div class="top">
+    <h1><span class="live" id="live" aria-hidden="true"></span>הזמנות</h1>
+    <div class="top-actions">
+      <button class="icon-btn" id="notifyBtn" aria-label="התראות על הזמנות חדשות" title="התראות">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg>
+      </button>
+      <button class="icon-btn" id="refreshBtn" aria-label="רענון">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+      </button>
+    </div>
+  </div>
+  <p class="updated" id="updated" aria-live="polite"></p>
+
+  <div class="stats">
+    <div class="stat hl"><b id="sOrders">–</b><span>הזמנות פעילות</span></div>
+    <div class="stat"><b id="sUnits">–</b><span>יחידות משוריינות</span></div>
+    <div class="stat"><b id="sToday">–</b><span>היום</span></div>
+  </div>
+
+  <div class="tools">
+    <input class="input" type="search" id="q" placeholder="חיפוש לפי שם, טלפון או עיר" aria-label="חיפוש">
+  </div>
+  <div class="chips" id="chips" role="group" aria-label="סינון לפי סטטוס"></div>
+
+  <div class="list" id="list"></div>
+
+  <div class="foot">
+    <button class="link" id="csvBtn">הורדת קובץ CSV</button>
+    <button class="link" id="logout">יציאה</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script src="config.js"></script>
+<script>
+(function(){
+  const API = window.MIC_API_URL;
+  const KEY_STORE = 'micAdminKey';
+  const SEEN_STORE = 'micSeenRows';
+  const REFRESH_MS = 30000;
+  let KEY = '', orders = [], statuses = ['חדש','נוצר קשר','שולם','נשלח','בוטל'], filter = 'all', timer = null, firstLoad = true;
+
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const store = {
+    get(k, s){ try{ return (s||localStorage).getItem(k) || ''; }catch(e){ return ''; } },
+    set(k, v, s){ try{ (s||localStorage).setItem(k, v); }catch(e){} },
+    del(k){ try{ localStorage.removeItem(k); sessionStorage.removeItem(k); }catch(e){} }
+  };
+  function toast(msg){ const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 2600); }
+
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+
+  async function fetchOrders(key){
+    const res = await fetch(API + '?type=orders&key=' + encodeURIComponent(key) + '&t=' + Date.now());
+    return res.json();
+  }
+
+  // ---- login ----
+  $('gateForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const val = $('pw').value.trim(); if(!val) return;
+    if(!API){ $('gateErr').textContent = 'חסרה כתובת השרת ב-config.js (ראו SETUP.md).'; return; }
+    $('gateBtn').disabled = true; $('gateErr').textContent = '';
+    try{
+      const d = await fetchOrders(val);
+      if(!d || d.error){ $('gateErr').textContent = 'סיסמה שגויה.'; return; }
+      KEY = val;
+      if($('remember').checked) store.set(KEY_STORE, val); else store.set(KEY_STORE, val, sessionStorage);
+      openApp(d);
+    }catch(err){ $('gateErr').textContent = 'אין חיבור לשרת. נסו שוב.'; }
+    finally{ $('gateBtn').disabled = false; }
+  });
+
+  $('logout').onclick = () => { store.del(KEY_STORE); location.reload(); };
+
+  function openApp(data){
+    $('gate').hidden = true; $('gate').style.display = 'none'; $('app').hidden = false;
+    apply(data);
+    clearInterval(timer); timer = setInterval(load, REFRESH_MS);
+  }
+
+  // ---- data ----
+  async function load(){
+    const btn = $('refreshBtn'); btn.classList.add('spin');
+    try{
+      const d = await fetchOrders(KEY);
+      if(d && d.error === 'unauthorized'){ store.del(KEY_STORE); location.reload(); return; }
+      apply(d); $('live').classList.remove('off');
+    }catch(e){
+      $('live').classList.add('off'); $('updated').textContent = 'אין חיבור. ננסה שוב בעוד חצי דקה.';
+    }finally{ btn.classList.remove('spin'); }
+  }
+  $('refreshBtn').onclick = load;
+  document.addEventListener('visibilitychange', () => { if(!document.hidden && KEY) load(); });
+
+  function apply(d){
+    if(!d || !Array.isArray(d.orders)) throw new Error('bad data');
+    if(Array.isArray(d.statuses)) statuses = d.statuses;
+    const seen = Number(store.get(SEEN_STORE) || 0);
+    const maxRow = d.orders.reduce((m, o) => Math.max(m, o.row), 0);
+    const fresh = d.orders.filter(o => o.row > seen);
+    if(!firstLoad && fresh.length) notifyNew(fresh);
+    orders = d.orders.map(o => Object.assign(o, { _new: !firstLoad && o.row > seen }));
+    if(maxRow) store.set(SEEN_STORE, String(maxRow));
+    firstLoad = false;
+    $('updated').textContent = 'עודכן ' + new Date().toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'}) + ' · מתרענן לבד כל 30 שניות';
+    render();
+  }
+
+  function render(){
+    const active = orders.filter(o => o.status !== 'בוטל');
+    const today = new Date().toDateString();
+    $('sOrders').textContent = active.length;
+    $('sUnits').textContent = active.reduce((s, o) => s + Number(o.qty || 0), 0);
+    $('sToday').textContent = orders.filter(o => new Date(o.time).toDateString() === today).length;
+
+    const counts = {}; orders.forEach(o => counts[o.status] = (counts[o.status] || 0) + 1);
+    $('chips').innerHTML = [['all', 'הכול (' + orders.length + ')']].concat(statuses.map(s => [s, s + ' (' + (counts[s] || 0) + ')']))
+      .map(([v, t]) => '<button class="chip" data-f="' + esc(v) + '" aria-pressed="' + (filter === v) + '">' + esc(t) + '</button>').join('');
+
+    const q = $('q').value.trim().toLowerCase();
+    const shown = orders.filter(o => (filter === 'all' || o.status === filter) &&
+      (!q || [o.name, o.phone, o.city, o.note].join(' ').toLowerCase().includes(q)));
+
+    if(!orders.length){ $('list').innerHTML = '<div class="empty">עוד אין הזמנות. כשמישהו ילחץ "שריינו לי יחידה" באתר, ההזמנה תופיע כאן.</div>'; return; }
+    if(!shown.length){ $('list').innerHTML = '<div class="empty">אין הזמנות שמתאימות לסינון.</div>'; return; }
+
+    $('list').innerHTML = shown.map(o => {
+      const ph = String(o.phone || '').replace(/\D/g, '');
+      const wa = ph.startsWith('0') ? '972' + ph.slice(1) : ph;
+      const when = o.time ? new Date(o.time).toLocaleString('he-IL', {day:'numeric', month:'numeric', hour:'2-digit', minute:'2-digit'}) : '';
+      return '<article class="order' + (o._new ? ' new-flash' : '') + '" data-status="' + esc(o.status) + '">' +
+        '<div class="o-head"><div><div class="o-name">' + esc(o.name) + '</div><div class="o-time">' + esc(when) + '</div></div>' +
+        '<span class="o-qty">× ' + esc(o.qty) + '</span></div>' +
+        '<div class="o-meta"><span dir="ltr">' + esc(o.phone) + '</span>' + (o.city ? '<span>' + esc(o.city) + '</span>' : '') + '</div>' +
+        (o.note ? '<div class="o-note">' + esc(o.note) + '</div>' : '') +
+        '<div class="o-actions">' +
+          '<a class="act" href="tel:' + esc(ph) + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>חיוג</a>' +
+          '<a class="act" href="https://wa.me/' + esc(wa) + '" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg>וואטסאפ</a>' +
+          '<select class="status" data-row="' + o.row + '" aria-label="סטטוס של ' + esc(o.name) + '">' +
+            statuses.map(s => '<option' + (s === o.status ? ' selected' : '') + '>' + esc(s) + '</option>').join('') +
+          '</select>' +
+        '</div></article>';
+    }).join('');
+  }
+
+  $('chips').addEventListener('click', e => { const b = e.target.closest('.chip'); if(!b) return; filter = b.dataset.f; render(); });
+  $('q').addEventListener('input', render);
+
+  $('list').addEventListener('change', async e => {
+    const sel = e.target.closest('select.status'); if(!sel) return;
+    const row = Number(sel.dataset.row), status = sel.value;
+    const o = orders.find(x => x.row === row); const prev = o.status;
+    o.status = status; render();
+    try{
+      const res = await fetch(API, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body: JSON.stringify({ action:'status', row, status, key: KEY }) });
+      const d = await res.json(); if(!d.ok) throw new Error(d.error);
+      toast('הסטטוס עודכן: ' + status);
+    }catch(err){ o.status = prev; render(); toast('העדכון נכשל. נסו שוב.'); }
+  });
+
+  // ---- new-order alerts (while the app is open) ----
+  function updateBell(){
+    const on = 'Notification' in window && Notification.permission === 'granted';
+    $('notifyBtn').style.color = on ? 'var(--lime)' : '';
+    $('notifyBtn').setAttribute('aria-pressed', on);
+  }
+  $('notifyBtn').onclick = async () => {
+    if(!('Notification' in window)){ toast('המכשיר לא תומך בהתראות. במייל תקבלו הודעה על כל הזמנה.'); return; }
+    const p = await Notification.requestPermission(); updateBell();
+    toast(p === 'granted' ? 'התראות פועלות כל עוד האפליקציה פתוחה' : 'ההתראות חסומות בהגדרות הדפדפן');
+  };
+  updateBell();
+
+  function beep(){
+    try{
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      [880, 1320].forEach((f, i) => { const o = ctx.createOscillator(), g = ctx.createGain();
+        o.frequency.value = f; o.connect(g); g.connect(ctx.destination);
+        g.gain.setValueAtTime(.12, ctx.currentTime + i*.16); g.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + i*.16 + .15);
+        o.start(ctx.currentTime + i*.16); o.stop(ctx.currentTime + i*.16 + .16); });
+    }catch(e){}
+  }
+  function notifyNew(list){
+    const units = list.reduce((s, o) => s + Number(o.qty || 0), 0);
+    const title = list.length === 1 ? 'הזמנה חדשה: ' + list[0].name : list.length + ' הזמנות חדשות';
+    const body = units + ' יחידות' + (list.length === 1 ? ' · ' + list[0].phone : '');
+    toast(title); beep(); if(navigator.vibrate) navigator.vibrate([120, 60, 120]);
+    document.title = '(' + list.length + ') הזמנות מיקרופונים';
+    setTimeout(() => document.title = 'הזמנות מיקרופונים', 8000);
+    if('Notification' in window && Notification.permission === 'granted'){
+      const opts = { body, icon:'icon-192.png', badge:'icon-192.png', tag:'mic-order', renotify:true };
+      navigator.serviceWorker && navigator.serviceWorker.ready
+        ? navigator.serviceWorker.ready.then(r => r.showNotification(title, opts)).catch(() => new Notification(title, opts))
+        : new Notification(title, opts);
+    }
+  }
+
+  // ---- CSV export ----
+  $('csvBtn').onclick = () => {
+    const head = ['זמן','שם','טלפון','כמות','עיר','הערה','סטטוס'];
+    const rows = orders.map(o => [new Date(o.time).toLocaleString('he-IL'), o.name, o.phone, o.qty, o.city, o.note, o.status]);
+    const csv = '﻿' + [head].concat(rows).map(r => r.map(v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"').join(',')).join('\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'}));
+    a.download = 'mic-orders-' + new Date().toISOString().slice(0, 10) + '.csv'; a.click();
+  };
+
+  // ---- auto login ----
+  const saved = store.get(KEY_STORE) || store.get(KEY_STORE, sessionStorage);
+  if(saved && API){
+    KEY = saved;
+    fetchOrders(saved).then(d => { if(d && !d.error) openApp(d); else store.del(KEY_STORE); }).catch(() => {});
+  }
+})();
+</script>
+</body>
+</html>
