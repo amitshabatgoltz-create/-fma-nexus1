@@ -45,7 +45,7 @@ const unsigned long LONG_PRESS = 1500;   // לחיצה ארוכה = חימום
 
 // ---- לוגו ----
 const int LOGO = 9;
-const uint8_t LOGO_PERCENT[4] = {20, 45, 70, 100};   // חימום: כבוי, חלש, בינוני, חזק
+const uint8_t LOGO_PERCENT[4] = {35, 55, 75, 100};   // חימום: כבוי, חלש, בינוני, חזק
 const unsigned long LOGO_FADE = 500;                  // מעבר הדרגתי בין עוצמות
 
 // ---- חימום ----
