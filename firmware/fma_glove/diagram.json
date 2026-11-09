@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "author": "FMA Tech",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-arduino-nano", "id": "nano", "top": 0, "left": 0, "attrs": {} },
+    { "type": "wokwi-pushbutton", "id": "btnGreen", "top": 150, "left": -160, "attrs": { "color": "green", "key": "1", "bounce": "0" } },
+    { "type": "wokwi-pushbutton", "id": "btnBlue", "top": 150, "left": -60, "attrs": { "color": "blue", "key": "2", "bounce": "0" } },
+    { "type": "wokwi-pushbutton", "id": "btnRed", "top": 150, "left": 40, "attrs": { "color": "red", "key": "3", "bounce": "0" } },
+    { "type": "wokwi-led", "id": "ledMotor", "top": -120, "left": -150, "attrs": { "color": "yellow", "label": "MOTOR" } },
+    { "type": "wokwi-resistor", "id": "rMotor", "top": -60, "left": -170, "rotate": 90, "attrs": { "value": "220" } },
+    { "type": "wokwi-led", "id": "ledHeater", "top": -120, "left": -80, "attrs": { "color": "red", "label": "HEATER" } },
+    { "type": "wokwi-resistor", "id": "rHeater", "top": -60, "left": -100, "rotate": 90, "attrs": { "value": "220" } },
+    { "type": "wokwi-led", "id": "ledLogo", "top": -120, "left": -10, "attrs": { "color": "white", "label": "LOGO" } },
+    { "type": "wokwi-resistor", "id": "rLogo", "top": -60, "left": -30, "rotate": 90, "attrs": { "value": "220" } },
+    { "type": "wokwi-ntc-temperature-sensor", "id": "ntc", "top": 120, "left": 180, "attrs": { "temperature": "30" } }
+  ],
+  "connections": [
+    [ "btnGreen:1.l", "nano:4", "green", [] ],
+    [ "btnGreen:2.r", "nano:GND.1", "black", [] ],
+    [ "btnBlue:1.l", "nano:7", "blue", [] ],
+    [ "btnBlue:2.r", "nano:GND.1", "black", [] ],
+    [ "btnRed:1.l", "nano:2", "red", [] ],
+    [ "btnRed:2.r", "nano:GND.1", "black", [] ],
+
+    [ "nano:5", "rMotor:1", "orange", [] ],
+    [ "rMotor:2", "ledMotor:A", "orange", [] ],
+    [ "ledMotor:C", "nano:GND.2", "black", [] ],
+
+    [ "nano:6", "rHeater:1", "red", [] ],
+    [ "rHeater:2", "ledHeater:A", "red", [] ],
+    [ "ledHeater:C", "nano:GND.2", "black", [] ],
+
+    [ "nano:9", "rLogo:1", "white", [] ],
+    [ "rLogo:2", "ledLogo:A", "white", [] ],
+    [ "ledLogo:C", "nano:GND.2", "black", [] ],
+
+    [ "ntc:VCC", "nano:5V", "red", [] ],
+    [ "ntc:GND", "nano:GND.2", "black", [] ],
+    [ "ntc:OUT", "nano:A0", "purple", [] ]
+  ],
+  "dependencies": {}
+}
