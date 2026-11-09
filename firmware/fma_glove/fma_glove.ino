@@ -13,7 +13,9 @@
  *   D5 מנועי רטט · D9 לוגו (עוצמת האור = רמת החימום) · D6 מחמם
  *
  * חיישן חום NTC 10K (B3950), בצד של העור:
- *   5V ── נגד 10K ── A0 ── NTC ── GND
+ *   בכפפה: רגל אחת של ה-NTC ל-5V המשותף, הרגל השנייה בחוט ה-NTC של הכבל.
+ *   בקופסה: חוט ה-NTC ל-A0, ונגד 10K בין A0 ל-GND.
+ *   5V ── NTC ── A0 ── נגד 10K ── GND
  *
  * בטיחות: לא יותר מ-40°C. אם החיישן מנותק או בקצר, החימום נכבה.
  * החימום נכבה לבד אחרי 30 דקות. הכפפה לא נכנסת לשינה כשהחימום דולק.
@@ -23,7 +25,8 @@
 #include <avr/pgmspace.h>
 #include <math.h>
 
-#define DEBUG 1   // 1 = מדפיס טמפרטורה ומצב ל-Serial Monitor (9600) פעם בשנייה
+#define DEBUG 1      // 1 = מדפיס טמפרטורה ומצב ל-Serial Monitor (9600) פעם בשנייה
+#define NTC_TO_5V 1  // 1 = בכפפה (NTC בין 5V ל-A0). ב-Wokwi לשנות ל-0, כי שם החיישן מחובר הפוך
 
 const int MOTOR = 5;
 const int LED = 13;  // נורית L: דולקת כשתוכנית פועלת
@@ -289,7 +292,11 @@ float readTemp() {
   for (int i = 0; i < 8; i++) sum += analogRead(NTC_PIN);
   int adc = sum / 8;
   if (adc < 15 || adc > 1008) return NAN;          // חיישן בקצר או מנותק
-  float r = NTC_R_FIXED * adc / (1023.0 - adc);
+#if NTC_TO_5V
+  float r = NTC_R_FIXED * (1023.0 - adc) / adc;    // NTC למעלה (5V), נגד 10K למטה (GND)
+#else
+  float r = NTC_R_FIXED * adc / (1023.0 - adc);    // NTC למטה (GND), נגד 10K למעלה (5V)
+#endif
   float k = 1.0 / (log(r / NTC_R0) / NTC_BETA + 1.0 / (NTC_T0 + 273.15));
   return k - 273.15;
 }
