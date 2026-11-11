@@ -19,10 +19,16 @@
  *
  * בטיחות: לא יותר מ-40°C. אם החיישן מנותק או בקצר, החימום נכבה.
  * החימום נכבה לבד אחרי 30 דקות. הכפפה לא נכנסת לשינה כשהחימום דולק.
+ *
+ * מודול הטעינה מכבה את עצמו כשהעומס קטן (בערך 30 שניות). לכן, כשהמחמם כבוי,
+ * הוא נדלק לשליש שנייה פעם ב-15 שניות ("דופק"), גם בזמן שינה. זה 2% מהזמן, בלי חום מורגש.
+ * אחרי 10 דקות בלי אף לחיצה (ובלי תוכנית או חימום) הדופק נפסק, המודול נכבה,
+ * והסוללה לא מתרוקנת. כדי להדליק שוב: מתג כבוי ואז דולק.
  */
 
 #include <avr/sleep.h>
 #include <avr/pgmspace.h>
+#include <avr/wdt.h>
 #include <math.h>
 
 #define DEBUG 1      // 1 = מדפיס טמפרטורה ומצב ל-Serial Monitor (9600) פעם בשנייה
@@ -45,6 +51,12 @@ const unsigned long GAP_BETWEEN = 500;   // שקט קצר בין מצב למצב
 const unsigned long FADE_TIME = 3000;    // היחלשות בסוף
 const unsigned long IDLE_SLEEP = 20000;  // שינה אחרי 20 שניות בלי כלום
 const unsigned long LONG_PRESS = 1500;   // לחיצה ארוכה = חימום
+
+// ---- שמירה על מודול הטעינה דולק ----
+const unsigned long KEEPALIVE_EVERY = 15000;          // דופק כל 15 שניות
+const unsigned long KEEPALIVE_PULSE = 300;            // אורך הדופק
+const unsigned long AUTO_OFF = 10UL * 60 * 1000;      // 10 דקות בלי לחיצה = כיבוי מלא
+const uint8_t SLEEP_WAKES_PER_PULSE = 2;              // בשינה: התעוררות כל 8 שניות, דופק כל 16
 
 // ---- לוגו ----
 const int LOGO = 9;
@@ -167,6 +179,8 @@ float skinTemp = NAN;
 unsigned long lastTempRead = 0;
 int logoFrom = 0, logoTo = 0;
 unsigned long logoFadeStart = 0;
+unsigned long lastKeepAlive = 0;
+volatile bool buttonWoke = false;
 
 unsigned long cycleLength(int s) {
   unsigned long total = 0;
@@ -310,6 +324,16 @@ void setHeatLevel(int level, unsigned long now) {
   setLogo(logoPWM(LOGO_PERCENT[level]), now);
 }
 
+// דופק קצר במחמם, כדי שמודול הטעינה יראה עומס ולא יכבה
+bool tooHot() { return sensorOk() && skinTemp >= HEAT_HARD_MAX; }
+
+bool keepAlivePulse(unsigned long now) {
+  if (heaterOn) { lastKeepAlive = now; return false; }   // המחמם עצמו כבר עומס
+  if (tooHot()) return false;
+  if (now - lastKeepAlive >= KEEPALIVE_EVERY) lastKeepAlive = now;
+  return now - lastKeepAlive < KEEPALIVE_PULSE;
+}
+
 void updateHeat(unsigned long now) {
   if (now - lastTempRead >= 250) { lastTempRead = now; skinTemp = readTemp(); }
   if (heatLevel > 0 && !sensorOk()) setHeatLevel(0, now);                  // תקלה בחיישן = כבוי
@@ -318,11 +342,20 @@ void updateHeat(unsigned long now) {
   if (heatLevel == 0 || !sensorOk() || skinTemp >= HEAT_HARD_MAX) heaterOn = false;
   else if (skinTemp >= HEAT_TARGET[heatLevel]) heaterOn = false;
   else if (skinTemp <= HEAT_TARGET[heatLevel] - HEAT_HYST) heaterOn = true;
-  digitalWrite(HEATER, heaterOn ? HIGH : LOW);
+  digitalWrite(HEATER, (heaterOn || keepAlivePulse(now)) ? HIGH : LOW);
 }
 
 // ---- שינה ----
-ISR(PCINT2_vect) {}  // לחיצה על כפתור מעירה את הארדואינו
+ISR(PCINT2_vect) { buttonWoke = true; }  // לחיצה על כפתור מעירה את הארדואינו
+ISR(WDT_vect) {}                          // שעון ה-watchdog מעיר כל 8 שניות לדופק
+
+void watchdog8s() {
+  cli();
+  MCUSR &= ~bit(WDRF);
+  WDTCSR = bit(WDCE) | bit(WDE);
+  WDTCSR = bit(WDIE) | bit(WDP3) | bit(WDP0);   // פסיקה בלבד (בלי ריסט), 8 שניות
+  sei();
+}
 
 void goToSleep() {
   analogWrite(MOTOR, 0);
@@ -339,15 +372,32 @@ void goToSleep() {
   Serial.flush();
 #endif
   pausedProgram = -1;
-  PCMSK2 = bit(PCINT18) | bit(PCINT20) | bit(PCINT23);  // D2, D4, D7
-  PCIFR |= bit(PCIF2);
-  PCICR |= bit(PCIE2);
-  set_sleep_mode(SLEEP_MODE_PWR_DOWN);
-  sleep_enable();
-  sleep_cpu();
-  sleep_disable();
-  PCICR &= ~bit(PCIE2);
+  unsigned long idle = millis() - lastActivity;   // הזמן מאז הלחיצה האחרונה (millis עוצר בשינה)
+  bool fullOff = false;
+  uint8_t wakes = 0;
+  buttonWoke = false;
+  while (!buttonWoke) {
+    PCMSK2 = bit(PCINT18) | bit(PCINT20) | bit(PCINT23);  // D2, D4, D7
+    PCIFR |= bit(PCIF2);
+    PCICR |= bit(PCIE2);
+    if (!fullOff) watchdog8s();
+    set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+    sleep_enable();
+    sleep_cpu();
+    sleep_disable();
+    wdt_disable();
+    PCICR &= ~bit(PCIE2);
+    if (buttonWoke) break;
+    idle += 8000;                                  // התעורר מה-watchdog
+    if (idle >= AUTO_OFF) { fullOff = true; continue; }   // בלי דופק: המודול יכבה את הכול
+    if (++wakes >= SLEEP_WAKES_PER_PULSE) {
+      wakes = 0;
+      skinTemp = readTemp();
+      if (!tooHot()) { digitalWrite(HEATER, HIGH); delay(KEEPALIVE_PULSE); digitalWrite(HEATER, LOW); }
+    }
+  }
   unsigned long now = millis();
+  lastKeepAlive = now;
   lastActivity = now;
   logoFrom = 0; logoTo = 0; logoFadeStart = now;
   setLogo(logoPWM(LOGO_PERCENT[heatLevel]), now);       // הלוגו נדלק שוב
@@ -373,6 +423,8 @@ void longPress(int i, unsigned long now) {
 }
 
 void setup() {
+  MCUSR = 0;
+  wdt_disable();
   pinMode(MOTOR, OUTPUT);
   pinMode(LED, OUTPUT);
   pinMode(LOGO, OUTPUT);
