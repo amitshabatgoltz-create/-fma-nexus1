@@ -18,6 +18,7 @@
  *   5V ── NTC ── A0 ── נגד 10K ── GND
  *
  * בטיחות: לא יותר מ-40°C. אם החיישן מנותק או בקצר, החימום נכבה.
+ * אם המחמם דולק 3 דקות ברצף והחיישן כמעט לא התחמם (זז ממקומו), החימום נכבה.
  * החימום נכבה לבד אחרי 30 דקות.
  *
  * מודול הטעינה מכבה את עצמו כשהעומס קטן (בערך 30 שניות). לכן, כשהמחמם כבוי,
@@ -67,6 +68,8 @@ const float HEAT_TARGET[4] = {0, 35.0, 38.0, 40.0};   // °C על העור
 const float HEAT_HARD_MAX = 40.5;                     // מעל זה המחמם כבוי תמיד
 const float HEAT_HYST = 0.5;                          // נדלק שוב רק 0.5° מתחת ליעד
 const unsigned long HEAT_MAX_TIME = 30UL * 60 * 1000; // כיבוי אוטומטי אחרי 30 דקות
+const unsigned long HEAT_STUCK_TIME = 3UL * 60 * 1000; // מחמם דולק 3 דקות ברצף...
+const float HEAT_STUCK_RISE = 1.5;                    // ...והחיישן עלה פחות מ-1.5°: החיישן לא צמוד, כבוי
 const float NTC_R_FIXED = 10000.0, NTC_R0 = 10000.0, NTC_T0 = 25.0, NTC_BETA = 3950.0;
 
 // ---- המצבים ----
@@ -174,6 +177,8 @@ int readButton(int i, unsigned long now) {
 int heatLevel = 0;               // 0 כבוי, 1 חלש, 2 בינוני, 3 חזק
 unsigned long heatStart = 0;
 bool heaterOn = false;
+unsigned long heaterOnSince = 0;
+float tempAtHeaterOn = 0;
 float skinTemp = NAN;
 unsigned long lastTempRead = 0;
 int logoFrom = 0, logoTo = 0;
@@ -342,6 +347,15 @@ void updateHeat(unsigned long now) {
   if (heatLevel == 0 || !sensorOk() || skinTemp >= HEAT_HARD_MAX) heaterOn = false;
   else if (skinTemp >= HEAT_TARGET[heatLevel]) heaterOn = false;
   else if (skinTemp <= HEAT_TARGET[heatLevel] - HEAT_HYST) heaterOn = true;
+
+  // הגנה: אם החיישן זז ולא מרגיש את החום, המחמם היה נשאר דולק בלי הפסקה
+  if (heaterOn && heaterOnSince == 0) { heaterOnSince = now ? now : 1; tempAtHeaterOn = skinTemp; }
+  if (!heaterOn) heaterOnSince = 0;
+  if (heaterOn && now - heaterOnSince >= HEAT_STUCK_TIME && skinTemp - tempAtHeaterOn < HEAT_STUCK_RISE) {
+    setHeatLevel(0, now);
+    heaterOn = false;
+    heaterOnSince = 0;
+  }
   digitalWrite(HEATER, (heaterOn || keepAlivePulse(now)) ? HIGH : LOW);
 }
 
